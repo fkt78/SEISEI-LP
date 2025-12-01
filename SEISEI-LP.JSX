@@ -1,23 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronRight, Check, Star, UserCheck, ArrowRight, Activity, Heart, ShieldCheck, Menu, X } from 'lucide-react';
+import { ChevronRight, Check, Star, UserCheck, ArrowRight, Activity, Heart, ShieldCheck, Menu, X, Send, Loader2, AlertCircle, FileText } from 'lucide-react';
 
-export default function SeiseiLandingPage() {
+export default function SeiseiIntegratedLP() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   
-  // 診断機能用ステート
+  // ---------------------------------------------------------
+  // 診断機能用ロジック（高機能版を移植）
+  // ---------------------------------------------------------
   const [quizStep, setQuizStep] = useState(0); // 0:未開始, 1~:質問中, 99:結果
   const [answers, setAnswers] = useState<number[]>([]);
   const [diagnosisResult, setDiagnosisResult] = useState<string | null>(null);
-
-  // スクロール検知
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  
+  // フォーム送信ステート
+  const [formState, setFormState] = useState<'idle' | 'submitting' | 'success'>('idle');
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
 
   // 診断データ
   const questions = [
@@ -50,109 +47,135 @@ export default function SeiseiLandingPage() {
     }
   ];
 
+  // 回答処理
   const handleAnswer = (optionIndex: number) => {
     const newAnswers = [...answers, optionIndex];
     setAnswers(newAnswers);
     
-    if (quizStep < questions.length) {
-      setQuizStep(quizStep + 1);
-    } else {
-      // 簡易的な結果判定ロジック
-      const countA = newAnswers.filter(a => a === 0).length;
-      const countB = newAnswers.filter(a => a === 1).length;
-      const countC = newAnswers.filter(a => a === 2).length;
-      
-      if (countA >= countB && countA >= countC) setDiagnosisResult("開拓者タイプ");
-      else if (countB >= countA && countB >= countC) setDiagnosisResult("堅実家タイプ");
-      else setDiagnosisResult("調和者タイプ");
-      
-      setQuizStep(99); // 結果画面へ
-    }
+    // スムーズな遷移のための少しの遅延
+    setTimeout(() => {
+        if (quizStep < questions.length) {
+          setQuizStep(quizStep + 1);
+        } else {
+          // 結果判定ロジック
+          const countA = newAnswers.filter(a => a === 0).length;
+          const countB = newAnswers.filter(a => a === 1).length;
+          const countC = newAnswers.filter(a => a === 2).length;
+          
+          let result = "調和者タイプ";
+          if (countA >= countB && countA >= countC) result = "開拓者タイプ";
+          else if (countB >= countA && countB >= countC) result = "堅実家タイプ";
+          
+          setDiagnosisResult(result);
+          setQuizStep(99); // 結果画面へ
+        }
+    }, 300);
   };
 
   const startQuiz = () => setQuizStep(1);
 
+  // フォーム送信処理（LP内完結型）
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormState('submitting');
+    
+    // API送信シミュレーション
+    setTimeout(() => {
+      setFormState('success');
+    }, 2000);
+  };
+
+  // スクロール検知
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-800">
-      {/* Header */}
-      <header className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-md py-3' : 'bg-transparent py-5'}`}>
+      
+      {/* ---------------------------------------------------------
+          ヘッダー：クリニック風の清潔感あるデザイン（最初の案を採用）
+         --------------------------------------------------------- */}
+      <header className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-md py-3' : 'bg-white/90 backdrop-blur-md py-4 shadow-sm'}`}>
         <div className="container mx-auto px-4 md:px-8 flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-blue-900 rounded-full flex items-center justify-center text-white font-bold">S</div>
-            <span className={`text-xl font-bold tracking-widest ${isScrolled ? 'text-blue-900' : 'text-blue-900 md:text-white'}`}>SEISEI</span>
+            <div className="w-8 h-8 bg-blue-900 rounded-full flex items-center justify-center text-white font-bold font-serif">S</div>
+            <span className="text-xl font-bold tracking-widest text-blue-900">SEISEI</span>
           </div>
           
           <div className="hidden md:flex gap-6 items-center">
-            <nav className={`text-sm font-medium ${isScrolled ? 'text-slate-600' : 'text-slate-200'}`}>
-              <a href="#about" className="hover:text-blue-500 transition-colors mx-3">SEISEIについて</a>
-              <a href="#diagnosis" className="hover:text-blue-500 transition-colors mx-3">キャリア診断</a>
-              <a href="#voice" className="hover:text-blue-500 transition-colors mx-3">利用者の声</a>
+            <nav className="text-sm font-medium text-slate-600">
+              <a href="#" className="hover:text-blue-900 transition-colors mx-3">SEISEIについて</a>
+              <a href="#diagnosis-section" className="hover:text-blue-900 transition-colors mx-3">キャリア診断</a>
+              <a href="#" className="hover:text-blue-900 transition-colors mx-3">利用者の声</a>
             </nav>
             <button 
-              onClick={() => document.getElementById('diagnosis')?.scrollIntoView({ behavior: 'smooth' })}
-              className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white px-6 py-2 rounded-full font-bold shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5 text-sm"
+              onClick={() => document.getElementById('diagnosis-section')?.scrollIntoView({ behavior: 'smooth' })}
+              className="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2 rounded-full font-bold shadow-md transition-all text-sm"
             >
-              無料相談を予約する
+              無料相談予約
             </button>
           </div>
 
-          {/* Mobile Menu Button */}
           <button className="md:hidden text-slate-800" onClick={() => setMenuOpen(!menuOpen)}>
             {menuOpen ? <X /> : <Menu />}
           </button>
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
-        {/* Background Image / Abstract shapes */}
-        <div className="absolute inset-0 z-0">
-          <div className="absolute top-0 right-0 w-3/4 h-full bg-blue-50 rounded-bl-[100px] opacity-80"></div>
-          <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-yellow-50 rounded-tr-[100px] opacity-60"></div>
-        </div>
+      {/* ---------------------------------------------------------
+          ヒーローセクション：最初の「ドクターズコスメ」風デザイン
+         --------------------------------------------------------- */}
+      <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden bg-white">
+        {/* 背景装飾（優しい色味） */}
+        <div className="absolute top-0 right-0 w-2/3 h-full bg-blue-50/50 rounded-bl-[150px] -z-10"></div>
+        <div className="absolute bottom-0 left-0 w-1/3 h-1/2 bg-yellow-50/50 rounded-tr-[100px] -z-10"></div>
 
         <div className="container mx-auto px-4 relative z-10">
           <div className="flex flex-col md:flex-row items-center gap-12">
             <div className="md:w-1/2 space-y-6">
-              <div className="inline-block bg-white/80 backdrop-blur border border-blue-100 px-4 py-1 rounded-full text-blue-900 text-sm font-bold shadow-sm">
-                \ 3分でわかる / あなたの適職診断
+              <div className="inline-flex items-center gap-2 bg-white border border-blue-100 px-4 py-1.5 rounded-full text-blue-900 text-xs font-bold shadow-sm">
+                <span className="w-2 h-2 rounded-full bg-green-400"></span>
+                科学的な適職マッチング
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-slate-900">
                 今の職場は、<br/>
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-cyan-500">あなたの性格</span>に<br/>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-800 to-blue-600">あなたの性格</span>に<br/>
                 合っていますか？
               </h1>
               <p className="text-lg text-slate-600 leading-relaxed">
                 株式会社SEISEIは、履歴書だけでは見えない<br/>
-                「本来のあなた」と「企業風土」を科学的にマッチング。<br/>
-                まるでオーダーメイドのような転職体験を。
+                「本来のあなた」と「企業風土」を科学的に分析。<br/>
+                まるでオーダーメイドのような、失敗しない転職を。
               </p>
               
-              <div className="pt-4 flex flex-col sm:flex-row gap-4">
+              <div className="pt-4">
                 <button 
-                  onClick={() => document.getElementById('diagnosis')?.scrollIntoView({ behavior: 'smooth' })}
-                  className="bg-blue-900 text-white px-8 py-4 rounded-full font-bold text-lg shadow-xl hover:bg-blue-800 transition-all flex items-center justify-center gap-2"
+                  onClick={() => document.getElementById('diagnosis-section')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="bg-blue-900 text-white px-8 py-4 rounded-full font-bold text-lg shadow-xl hover:bg-blue-800 transition-all flex items-center justify-center gap-3 transform hover:-translate-y-1"
                 >
-                  <Activity size={20} />
-                  まずは性格診断を試す
+                  <Activity size={20} className="text-yellow-400" />
+                  あなたの「適職タイプ」を診断する
                 </button>
+                <p className="mt-3 text-slate-400 text-xs ml-4">※登録不要・約1分で完了します</p>
               </div>
             </div>
             
-            <div className="md:w-1/2 relative">
-              <div className="relative z-10 bg-white p-2 rounded-2xl shadow-2xl rotate-3 hover:rotate-0 transition-transform duration-500">
-                 {/* Placeholder for Hero Image */}
-                 <div className="bg-slate-200 rounded-xl h-64 md:h-96 w-full flex items-center justify-center overflow-hidden">
-                    <div className="text-slate-400 text-center">
-                        <UserCheck size={64} className="mx-auto mb-4 opacity-50" />
-                        <p>Woman Looking Confident<br/>in Office Setting</p>
-                    </div>
+            <div className="md:w-1/2 relative flex justify-center">
+              {/* イメージ画像（抽象的なイラストのプレースホルダー） */}
+              <div className="relative w-full max-w-md aspect-[4/5] bg-slate-100 rounded-2xl overflow-hidden shadow-2xl border-4 border-white">
+                 <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-300">
+                    <UserCheck size={80} className="mb-4 text-blue-100" />
+                    <p className="font-serif italic text-lg text-slate-400">Reliable Career Partner</p>
                  </div>
-                 
-                 {/* Floating Badge */}
-                 <div className="absolute -bottom-6 -left-6 bg-yellow-400 text-blue-900 p-4 rounded-full shadow-lg font-bold text-center w-24 h-24 flex items-center justify-center flex-col leading-none">
-                   <span className="text-xs">満足度</span>
-                   <span className="text-2xl">98<span className="text-sm">%</span></span>
+                 {/* 浮かぶバッジ */}
+                 <div className="absolute bottom-8 right-8 bg-white/90 backdrop-blur p-4 rounded-xl shadow-lg border-l-4 border-yellow-400">
+                    <p className="text-xs text-slate-500 font-bold">マッチング満足度</p>
+                    <p className="text-3xl font-bold text-blue-900">98.2<span className="text-sm">%</span></p>
                  </div>
               </div>
             </div>
@@ -160,246 +183,272 @@ export default function SeiseiLandingPage() {
         </div>
       </section>
 
-      {/* Problem Agitation (Checklist) */}
-      <section className="py-20 bg-white">
+      {/* ---------------------------------------------------------
+          問題提起セクション：共感を生むチェックリスト
+         --------------------------------------------------------- */}
+      <section className="py-20 bg-slate-50">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="text-3xl font-bold text-slate-800 mb-4">こんな「モヤモヤ」ありませんか？</h2>
-            <div className="h-1 w-20 bg-yellow-400 mx-auto rounded-full"></div>
-            <p className="mt-4 text-slate-600">
-              その悩み、あなたの能力不足ではなく<br/>
-              「環境とのミスマッチ」が原因かもしれません。
-            </p>
+            <h2 className="text-2xl md:text-3xl font-bold text-slate-800 mb-4">その「モヤモヤ」は、<br/>環境とのミスマッチかもしれません。</h2>
+            <div className="h-1 w-16 bg-yellow-400 mx-auto rounded-full"></div>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <div className="bg-slate-50 p-8 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+            <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+              <h3 className="font-bold text-lg mb-6 text-slate-700 flex items-center gap-2">
+                <AlertCircle size={20} className="text-red-400" />
+                こんな悩みはありませんか？
+              </h3>
               <ul className="space-y-4">
                 {[
-                  "頑張っているのに、なぜか評価されない",
-                  "上司や同僚とのコミュニケーションが疲れる",
-                  "自分の強みが何なのか、よく分からない",
+                  "頑張っているのに、なぜか正当に評価されない",
+                  "上司やチームの雰囲気に馴染めず、疲れてしまう",
+                  "自分の強みが活かせていない気がする",
                   "転職しても、また同じ失敗をしそうで怖い"
                 ].map((item, i) => (
                   <li key={i} className="flex items-start gap-3">
-                    <div className="bg-red-100 text-red-500 rounded-full p-1 mt-0.5 shrink-0">
-                      <X size={16} />
+                    <div className="bg-slate-100 text-slate-400 rounded-full p-1 mt-0.5 shrink-0">
+                      <Check size={14} />
                     </div>
-                    <span className="text-slate-700 font-medium">{item}</span>
+                    <span className="text-slate-600 text-sm font-medium">{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
-            <div className="relative rounded-2xl overflow-hidden bg-blue-900 text-white p-8 flex flex-col justify-center items-center text-center">
-              <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white to-transparent"></div>
-              <h3 className="text-2xl font-bold mb-4 relative z-10">
-                必要なのは、<br/>
-                「自分の取扱説明書」<br/>
-                を知ること。
-              </h3>
-              <p className="text-blue-100 relative z-10 text-sm">
-                SEISEIは、独自のアルゴリズムであなたの性格特性を分析し、
-                科学的根拠に基づいたマッチングを提供します。
-              </p>
+            <div className="flex flex-col justify-center items-start p-8">
+               <h3 className="text-xl font-bold text-blue-900 mb-4">
+                 必要なのは、「自分の取扱説明書」を知ること。
+               </h3>
+               <p className="text-slate-600 leading-relaxed mb-6 text-sm">
+                 SEISEIは、独自のアルゴリズムであなたの性格特性を分析。<br/>
+                 感覚ではなく「データ」に基づいて、あなたが最も輝ける場所を提案します。
+               </p>
+               <div className="flex items-center gap-4 text-blue-800 font-bold bg-blue-50 px-6 py-3 rounded-lg w-full">
+                 <ShieldCheck className="text-blue-600" />
+                 <span>入社後の定着率 98%の実績</span>
+               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Diagnostic Section (The Core Feature) */}
-      <section id="diagnosis" className="py-24 bg-gradient-to-br from-blue-50 to-indigo-50">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border-4 border-white">
+      {/* ---------------------------------------------------------
+          ★ここが重要！統合された診断アプリセクション
+          デザインは「LPと馴染む白ベース」に変更されています
+         --------------------------------------------------------- */}
+      <section id="diagnosis-section" className="py-24 bg-blue-900 text-white relative overflow-hidden">
+        {/* 背景の装飾 */}
+        <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white to-transparent pointer-events-none"></div>
+        
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center mb-12">
+            <span className="text-yellow-400 font-bold tracking-widest text-sm uppercase">Diagnostic Test</span>
+            <h2 className="text-3xl md:text-4xl font-bold mt-2">SEISEI キャリアタイプ診断</h2>
+            <p className="text-blue-200 mt-4">3つの質問で、あなたの適性と相性の良い企業を分析します。</p>
+          </div>
+
+          {/* 診断カード（白いカードデザインで清潔感を維持） */}
+          <div className="max-w-3xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden text-slate-800 min-h-[500px] flex flex-col">
             
-            {/* Header of Card */}
-            <div className="bg-blue-900 text-white p-6 text-center">
-              <h2 className="text-2xl font-bold flex items-center justify-center gap-2">
-                <Activity className="text-yellow-400" />
-                SEISEI キャリアタイプ診断
-              </h2>
-              <p className="text-blue-200 text-sm mt-1">3つの質問で、あなたの適正環境を分析します</p>
-            </div>
-
-            {/* Quiz Content */}
-            <div className="p-8 md:p-12 min-h-[400px] flex flex-col justify-center">
-              
-              {quizStep === 0 && (
-                <div className="text-center space-y-6">
-                  <div className="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mx-auto text-blue-600 mb-4">
-                    <ShieldCheck size={48} />
-                  </div>
-                  <h3 className="text-2xl font-bold text-slate-800">
-                    あなたの「隠れた才能」を見つけます
-                  </h3>
-                  <p className="text-slate-600">
-                    簡単な質問に答えるだけで、SEISEI独自のデータベースから<br/>
-                    あなたに最適な「働き方」と「企業タイプ」を判定します。
-                  </p>
-                  <button 
-                    onClick={startQuiz}
-                    className="w-full md:w-auto bg-yellow-500 hover:bg-yellow-600 text-white text-xl font-bold py-4 px-12 rounded-full shadow-lg transition-all transform hover:scale-105"
-                  >
-                    診断をスタートする
-                  </button>
-                  <p className="text-xs text-slate-400">※所要時間：約1分 / 完全無料</p>
+            {/* 診断：スタート画面 */}
+            {quizStep === 0 && (
+              <div className="flex-1 flex flex-col items-center justify-center p-8 md:p-12 text-center animate-in fade-in duration-500">
+                <div className="w-24 h-24 bg-blue-50 rounded-full flex items-center justify-center mb-6 text-blue-600">
+                  <Activity size={40} />
                 </div>
-              )}
+                <h3 className="text-2xl font-bold text-slate-900 mb-4">
+                  あなたの「隠れた才能」を見つけます
+                </h3>
+                <p className="text-slate-600 mb-8 max-w-md mx-auto">
+                  簡単な質問に答えるだけで、SEISEI独自のデータベースから<br className="hidden md:block"/>
+                  あなたに最適な「働き方」と「企業タイプ」を判定します。
+                </p>
+                <button 
+                  onClick={startQuiz}
+                  className="bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-blue-900 text-lg font-bold py-4 px-12 rounded-full shadow-lg transition-all transform hover:scale-105 flex items-center gap-2"
+                >
+                  診断をスタートする <ChevronRight size={20} />
+                </button>
+                <p className="mt-4 text-xs text-slate-400">所要時間：約1分 / 完全無料</p>
+              </div>
+            )}
 
-              {quizStep > 0 && quizStep <= questions.length && (
-                <div className="animate-in fade-in slide-in-from-right duration-300">
-                  <div className="mb-8">
-                    <div className="flex justify-between text-sm font-bold text-blue-900 mb-2">
-                      <span>Question {quizStep}</span>
-                      <span>{quizStep} / {questions.length}</span>
-                    </div>
-                    <div className="w-full bg-slate-100 rounded-full h-2">
-                      <div 
-                        className="bg-yellow-400 h-2 rounded-full transition-all duration-500" 
-                        style={{ width: `${(quizStep / questions.length) * 100}%` }}
-                      ></div>
-                    </div>
+            {/* 診断：質問画面（プログレスバー付き） */}
+            {quizStep > 0 && quizStep <= questions.length && (
+              <div className="flex-1 flex flex-col p-8 md:p-12 animate-in slide-in-from-right duration-300">
+                {/* ヘッダー・進捗 */}
+                <div className="mb-8">
+                  <div className="flex justify-between text-xs font-bold text-slate-400 mb-2 uppercase">
+                    <span>Question {quizStep}</span>
+                    <span>{Math.round((quizStep / questions.length) * 100)}%</span>
                   </div>
-                  
-                  <h3 className="text-xl md:text-2xl font-bold text-slate-800 mb-8 text-center">
-                    Q{quizStep}. {questions[quizStep - 1].text}
-                  </h3>
-
-                  <div className="space-y-4">
-                    {questions[quizStep - 1].options.map((option, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => handleAnswer(idx)}
-                        className="w-full text-left p-4 md:p-5 rounded-xl border-2 border-slate-100 hover:border-blue-500 hover:bg-blue-50 transition-all flex items-center justify-between group"
-                      >
-                        <span className="font-medium text-slate-700 group-hover:text-blue-900">{option.text}</span>
-                        <ChevronRight className="text-slate-300 group-hover:text-blue-500" />
-                      </button>
-                    ))}
+                  <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                    <div 
+                      className="bg-blue-600 h-1.5 rounded-full transition-all duration-500 ease-out" 
+                      style={{ width: `${(quizStep / questions.length) * 100}%` }}
+                    ></div>
                   </div>
                 </div>
-              )}
 
-              {quizStep === 99 && (
-                <div className="text-center animate-in zoom-in duration-500">
-                  <p className="text-slate-500 font-bold mb-2">診断結果</p>
-                  <h3 className="text-3xl md:text-4xl font-bold text-blue-900 mb-6">
+                {/* 質問文 */}
+                <h3 className="text-xl md:text-2xl font-bold text-slate-900 mb-10 text-center leading-relaxed">
+                  Q{quizStep}. <br/>{questions[quizStep - 1].text}
+                </h3>
+
+                {/* 選択肢 */}
+                <div className="space-y-4 max-w-lg mx-auto w-full">
+                  {questions[quizStep - 1].options.map((option, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => handleAnswer(idx)}
+                      className="w-full text-left p-5 rounded-xl border-2 border-slate-100 hover:border-blue-500 hover:bg-blue-50 transition-all flex items-center justify-between group bg-white"
+                    >
+                      <span className="font-medium text-slate-700 group-hover:text-blue-900">{option.text}</span>
+                      <ChevronRight className="text-slate-300 group-hover:text-blue-500 transition-transform group-hover:translate-x-1" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* 診断：結果＆フォーム画面（ここをシームレスに結合） */}
+            {quizStep === 99 && formState === 'idle' && (
+              <div className="flex-1 p-8 md:p-12 animate-in zoom-in duration-500">
+                
+                {/* 診断結果表示エリア */}
+                <div className="text-center mb-10">
+                  <p className="text-slate-500 font-bold text-xs uppercase tracking-widest mb-2">Diagnosis Result</p>
+                  <h3 className="text-3xl font-bold text-blue-900 mb-4">
                     あなたは<span className="text-yellow-500">「{diagnosisResult}」</span>です
                   </h3>
-                  
-                  <div className="bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-left">
-                    <h4 className="font-bold text-lg mb-2 text-slate-800 flex items-center gap-2">
-                      <Star className="text-yellow-400 fill-current" size={20} />
-                      このタイプの特徴
-                    </h4>
-                    <p className="text-slate-600 text-sm leading-relaxed mb-4">
-                      {diagnosisResult === "開拓者タイプ" && "自らの手で道を切り開くことに喜びを感じるリーダー気質。変化の激しい環境や、裁量権の大きいスタートアップなどで最大のパフォーマンスを発揮します。"}
-                      {diagnosisResult === "堅実家タイプ" && "計画的かつ着実に物事を進める実務のエキスパート。整ったワークフローがある環境や、専門性を深められる職種において、周囲からの絶大な信頼を得られます。"}
-                      {diagnosisResult === "調和者タイプ" && "チームの空気を読み、円滑なコミュニケーションを生み出すバランサー。人間関係を重視する企業文化や、顧客に寄り添うカスタマーサクセスなどで輝きます。"}
+                  <div className="flex justify-center gap-1 mb-6">
+                    {[1,2,3,4,5].map(i => <Star key={i} size={20} className="text-yellow-400 fill-current" />)}
+                  </div>
+                  <div className="bg-blue-50 p-6 rounded-xl border border-blue-100 text-left max-w-xl mx-auto">
+                    <p className="text-slate-700 text-sm leading-relaxed">
+                      {diagnosisResult === "開拓者タイプ" ? "自ら道を切り開くリーダー気質。変化の激しい環境で最大の力を発揮します。" : 
+                       diagnosisResult === "堅実家タイプ" ? "着実に計画を実行する実務のエキスパート。安定した基盤のある企業で信頼を得られます。" : 
+                       "チームの和を尊ぶバランサー。人間関係の良い職場で、組織の潤滑油として輝きます。"}
                     </p>
-                    <div className="bg-white p-4 rounded-lg border border-blue-100">
-                      <p className="text-blue-900 font-bold text-sm text-center">
-                        相性の良い企業数: <span className="text-2xl">1,240</span> 社 (SEISEIデータベース)
-                      </p>
-                    </div>
+                  </div>
+                </div>
+
+                {/* 矢印で誘導 */}
+                <div className="flex justify-center mb-8">
+                  <div className="bg-slate-100 rounded-full p-2 animate-bounce">
+                    <ArrowRight className="rotate-90 text-slate-400" />
+                  </div>
+                </div>
+
+                {/* 相談フォームエリア */}
+                <div className="max-w-xl mx-auto">
+                  <div className="text-center mb-6">
+                    <h4 className="font-bold text-slate-900 text-lg">この結果をプロに共有して相談する</h4>
+                    <p className="text-slate-500 text-sm">SEISEIのコンサルタントが、あなたのタイプに合った求人をご提案します。</p>
                   </div>
 
-                  <div className="space-y-4">
-                    <p className="font-bold text-slate-800">
-                      この結果を持って、<br className="md:hidden"/>具体的なキャリア相談をしませんか？
-                    </p>
-                    <ArrowRight className="mx-auto text-blue-300 rotate-90 my-2" />
+                  <form onSubmit={handleSubmit} className="space-y-4">
+                    {/* 診断結果添付の演出 */}
+                    <div className="bg-green-50 px-4 py-3 rounded-lg border border-green-100 flex items-center justify-between text-sm text-green-800 font-medium">
+                      <span className="flex items-center gap-2"><FileText size={16} /> 診断結果（{diagnosisResult}）を添付</span>
+                      <Check size={16} />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                       <input 
+                         required
+                         type="text" 
+                         placeholder="お名前" 
+                         className="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
+                         value={formData.name}
+                         onChange={e => setFormData({...formData, name: e.target.value})}
+                       />
+                       <input 
+                         required
+                         type="email" 
+                         placeholder="メールアドレス" 
+                         className="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
+                         value={formData.email}
+                         onChange={e => setFormData({...formData, email: e.target.value})}
+                       />
+                    </div>
+                    <textarea 
+                      placeholder="今の悩みがあればご記入ください（任意）" 
+                      className="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none h-20 resize-none transition-all"
+                      value={formData.message}
+                      onChange={e => setFormData({...formData, message: e.target.value})}
+                    ></textarea>
                     
-                    {/* The Main Conversion Form/Button Area */}
-                    <div className="bg-yellow-50 p-6 rounded-xl border border-yellow-200">
-                       <p className="text-xs text-slate-500 mb-4">SEISEIのキャリアコンサルタントが、あなたのタイプに合った非公開求人をご紹介します。</p>
-                       <form className="space-y-3" onSubmit={(e) => e.preventDefault()}>
-                          <input type="email" placeholder="メールアドレスを入力" className="w-full p-3 rounded-lg border border-slate-300 focus:outline-none focus:border-blue-500" />
-                          <button className="w-full bg-blue-900 text-white font-bold py-4 rounded-lg hover:bg-blue-800 shadow-md transition-colors">
-                            診断結果を送信して相談予約 (無料)
-                          </button>
-                       </form>
-                    </div>
-                  </div>
+                    <button type="submit" className="w-full bg-blue-900 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-blue-800 transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
+                      <Send size={18} />
+                      結果を送信して無料相談を予約
+                    </button>
+                    <p className="text-center text-xs text-slate-400">プライバシーポリシーに同意の上送信してください</p>
+                  </form>
                 </div>
-              )}
-
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features / Why SEISEI */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-slate-800">SEISEIが選ばれる理由</h2>
-            <p className="mt-4 text-slate-500">ただの「仕事紹介」ではない、人生のパートナーとして。</p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                icon: <Heart size={40} className="text-pink-500" />,
-                title: "性格重視のマッチング",
-                desc: "スキルだけでなく、企業のカルチャーとあなたの性格の相性を最優先に考えます。"
-              },
-              {
-                icon: <Activity size={40} className="text-blue-500" />,
-                title: "入社後定着率 98%",
-                desc: "無理な転職は勧めません。長く幸せに働ける環境だけを厳選してご紹介します。"
-              },
-              {
-                icon: <UserCheck size={40} className="text-green-500" />,
-                title: "専任カウンセラー制",
-                desc: "診断結果に基づき、業界に精通したプロがあなた専任でサポートします。"
-              }
-            ].map((feature, i) => (
-              <div key={i} className="text-center p-6 hover:bg-slate-50 rounded-xl transition-colors">
-                <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                  {feature.icon}
-                </div>
-                <h3 className="text-xl font-bold text-slate-800 mb-3">{feature.title}</h3>
-                <p className="text-slate-600 leading-relaxed text-sm">{feature.desc}</p>
               </div>
-            ))}
+            )}
+
+            {/* 送信中画面 */}
+            {formState === 'submitting' && (
+              <div className="flex-1 flex flex-col items-center justify-center p-12">
+                <Loader2 size={48} className="text-blue-600 animate-spin mb-4" />
+                <p className="text-slate-600 font-bold">データを送信中...</p>
+              </div>
+            )}
+
+            {/* 送信完了画面 */}
+            {formState === 'success' && (
+              <div className="flex-1 flex flex-col items-center justify-center p-12 text-center animate-in zoom-in">
+                <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-6 text-green-600">
+                  <Check size={40} />
+                </div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-2">送信が完了しました</h3>
+                <p className="text-slate-600 mb-8 max-w-sm">
+                  お問い合わせありがとうございます。<br/>
+                  担当のコンサルタントより、ご登録のメールアドレスへご連絡いたします。
+                </p>
+                <button onClick={() => window.location.reload()} className="text-blue-600 font-bold text-sm hover:underline">
+                  トップページへ戻る
+                </button>
+              </div>
+            )}
+
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-slate-900 text-slate-300 py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8 mb-8 border-b border-slate-700 pb-8">
-            <div className="col-span-1 md:col-span-2">
-              <div className="text-2xl font-bold text-white mb-4">株式会社 SEISEI</div>
-              <p className="text-sm leading-relaxed max-w-sm">
-                人と企業の「性格」を科学し、<br/>
-                世界で一番幸せなマッチングを創造する。<br/>
-                それが私たちのミッションです。
-              </p>
+      {/* ---------------------------------------------------------
+          特徴・フッター（最初のデザインを踏襲）
+         --------------------------------------------------------- */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4 text-center">
+            <h2 className="text-2xl font-bold text-slate-800 mb-12">SEISEIが選ばれる理由</h2>
+            <div className="grid md:grid-cols-3 gap-8">
+              {[
+                { icon: <Heart className="text-pink-500" />, title: "性格重視のマッチング", text: "スキルだけでなく、企業のカルチャーとの相性を最優先。" },
+                { icon: <ShieldCheck className="text-green-500" />, title: "無理な転職は勧めません", text: "あなたのキャリアにとって最適解でない場合は、現職残留も提案します。" },
+                { icon: <UserCheck className="text-blue-500" />, title: "専任担当制", text: "業界を知り尽くしたプロが、あなたのペースに合わせて伴走します。" }
+              ].map((item, i) => (
+                <div key={i} className="p-6 border border-slate-100 rounded-xl hover:shadow-lg transition-shadow">
+                  <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-600">
+                    {item.icon}
+                  </div>
+                  <h3 className="font-bold text-lg mb-2">{item.title}</h3>
+                  <p className="text-slate-500 text-sm">{item.text}</p>
+                </div>
+              ))}
             </div>
-            <div>
-              <h4 className="text-white font-bold mb-4">Service</h4>
-              <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-white">キャリア診断</a></li>
-                <li><a href="#" className="hover:text-white">転職相談サービス</a></li>
-                <li><a href="#" className="hover:text-white">企業向け採用支援</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-white font-bold mb-4">Company</h4>
-              <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-white">会社概要</a></li>
-                <li><a href="#" className="hover:text-white">プライバシーポリシー</a></li>
-                <li><a href="#" className="hover:text-white">お問い合わせ</a></li>
-              </ul>
-            </div>
-          </div>
-          <div className="text-center text-xs text-slate-500">
-            &copy; {new Date().getFullYear()} SEISEI Inc. All Rights Reserved.
-          </div>
+        </div>
+      </section>
+
+      <footer className="bg-slate-900 text-slate-400 py-12 border-t border-slate-800">
+        <div className="container mx-auto px-4 text-center">
+           <div className="text-2xl font-bold text-white mb-2">SEISEI</div>
+           <p className="text-xs">Copyright © SEISEI Inc. All rights reserved.</p>
         </div>
       </footer>
+
     </div>
   );
 }
