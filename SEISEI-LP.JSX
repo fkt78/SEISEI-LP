@@ -71,6 +71,17 @@
         .rotate-icon.active {
             transform: rotate(180deg);
         }
+
+        /* モーダル（プライバシーポリシー用） */
+        .modal {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased">
@@ -85,8 +96,8 @@
                 <a href="#about" class="text-sm font-medium hover:text-blue-600 transition">強み</a>
                 <a href="#diagnosis" class="text-sm font-medium hover:text-blue-600 transition">性格診断</a>
                 <a href="#flow" class="text-sm font-medium hover:text-blue-600 transition">流れ</a>
-                <a href="#voice" class="text-sm font-medium hover:text-blue-600 transition">声</a>
                 <a href="#faq" class="text-sm font-medium hover:text-blue-600 transition">Q&A</a>
+                <a href="#company" class="text-sm font-medium hover:text-blue-600 transition">会社概要</a>
                 <a href="#contact" class="bg-blue-600 text-white px-6 py-2.5 rounded-full hover:bg-blue-700 transition shadow-lg shadow-blue-200 text-sm font-bold">
                     無料相談する
                 </a>
@@ -329,7 +340,7 @@
         </div>
     </section>
 
-    <!-- [新規追加] サービスの流れ -->
+    <!-- サービスの流れ -->
     <section id="flow" class="py-20 bg-white">
         <div class="container mx-auto px-6 max-w-5xl">
             <div class="text-center mb-16">
@@ -393,7 +404,7 @@
         </div>
     </section>
 
-    <!-- [新規追加] 利用者の声 -->
+    <!-- 利用者の声 -->
     <section id="voice" class="py-20 bg-slate-50">
         <div class="container mx-auto px-6 max-w-5xl">
             <div class="text-center mb-16">
@@ -448,7 +459,7 @@
         </div>
     </section>
 
-    <!-- [新規追加] よくある質問 (Q&A) -->
+    <!-- よくある質問 (Q&A) -->
     <section id="faq" class="py-20 bg-white">
         <div class="container mx-auto px-6 max-w-3xl">
             <div class="text-center mb-16">
@@ -557,6 +568,45 @@
         </div>
     </section>
 
+    <!-- [新規追加] 会社概要 -->
+    <section id="company" class="py-20 bg-white border-t border-slate-100">
+        <div class="container mx-auto px-6 max-w-4xl">
+            <div class="text-center mb-16">
+                <span class="text-blue-600 font-bold tracking-widest uppercase text-xs">COMPANY</span>
+                <h2 class="text-3xl font-bold mt-2">会社概要</h2>
+                <div class="w-16 h-1 bg-blue-600 mx-auto mt-4 rounded"></div>
+            </div>
+            
+            <div class="bg-slate-50 rounded-2xl p-8 md:p-12">
+                <dl class="grid grid-cols-1 md:grid-cols-3 gap-y-8 gap-x-4">
+                    <div class="border-b border-slate-200 pb-4 md:border-b-0 md:pb-0">
+                        <dt class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">会社名</dt>
+                        <dd class="font-bold text-lg">株式会社聖成</dd>
+                    </div>
+                    <div class="border-b border-slate-200 pb-4 md:border-b-0 md:pb-0">
+                        <dt class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">代表取締役</dt>
+                        <dd class="font-bold text-lg">伊藤 正樹</dd>
+                    </div>
+                    <div class="border-b border-slate-200 pb-4 md:border-b-0 md:pb-0">
+                        <dt class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">設立</dt>
+                        <dd class="font-bold text-lg">2024年</dd>
+                    </div>
+                    <div class="md:col-span-3 border-b border-slate-200 pb-4 md:border-b-0 md:pb-0">
+                        <dt class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">所在地</dt>
+                        <dd class="font-bold text-lg">
+                            〒460-0003<br>
+                            愛知県名古屋市中区錦1丁目17-13 名興ビルディング 2F
+                        </dd>
+                    </div>
+                    <div class="md:col-span-3">
+                        <dt class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">電話番号</dt>
+                        <dd class="font-bold text-lg font-mono">052-990-3526</dd>
+                    </div>
+                </dl>
+            </div>
+        </div>
+    </section>
+
     <!-- フッター -->
     <footer class="bg-slate-900 text-white py-12 border-t border-slate-800">
         <div class="container mx-auto px-6 text-center md:text-left">
@@ -565,11 +615,12 @@
                     <div class="text-2xl font-bold tracking-tight mb-2">
                         株式会社 <span class="text-blue-400">SEISEI</span>
                     </div>
-                    <p class="text-slate-400 text-sm">あなたの個性が、未来をつくる。</p>
+                    <p class="text-slate-400 text-sm">一人ひとりの「生成」された可能性を、未来へ。</p>
                 </div>
                 <div class="flex gap-6 text-sm text-slate-400">
-                    <a href="#" class="hover:text-white transition">会社概要</a>
-                    <a href="#" class="hover:text-white transition">プライバシーポリシー</a>
+                    <a href="#company" class="hover:text-white transition">会社概要</a>
+                    <button onclick="openPrivacyModal()" class="hover:text-white transition underline decoration-dotted">プライバシーポリシー</button>
+                    <a href="#" class="hover:text-white transition">利用規約</a>
                 </div>
             </div>
             <div class="border-t border-slate-800 pt-8 text-slate-600 text-xs">
@@ -577,6 +628,55 @@
             </div>
         </div>
     </footer>
+
+    <!-- プライバシーポリシーモーダル -->
+    <div id="privacy-modal" class="fixed inset-0 z-[100] flex items-center justify-center modal bg-black/50 backdrop-blur-sm p-4">
+        <div class="bg-white w-full max-w-2xl max-h-[80vh] rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                <h3 class="text-xl font-bold">プライバシーポリシー</h3>
+                <button onclick="closePrivacyModal()" class="text-slate-400 hover:text-slate-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto text-sm text-slate-600 leading-relaxed space-y-4">
+                <p>株式会社聖成（以下、「当社」といいます。）は、本ウェブサイト上で提供するサービス（以下、「本サービス」といいます。）における、ユーザーの個人情報の取扱いについて、以下のとおりプライバシーポリシー（以下、「本ポリシー」といいます。）を定めます。</p>
+                
+                <h4 class="font-bold text-slate-800 mt-4">第1条（個人情報）</h4>
+                <p>「個人情報」とは、個人情報保護法にいう「個人情報」を指すものとし、生存する個人に関する情報であって、当該情報に含まれる氏名、生年月日、住所、電話番号、連絡先その他の記述等により特定の個人を識別できる情報及び容貌、指紋、声紋にかかるデータ、及び健康保険証の保険者番号などの当該情報単体から特定の個人を識別できる情報（個人識別情報）を指します。</p>
+
+                <h4 class="font-bold text-slate-800 mt-4">第2条（個人情報の収集方法）</h4>
+                <p>当社は、ユーザーが利用登録をする際に氏名、生年月日、住所、電話番号、メールアドレス、銀行口座番号、クレジットカード番号、運転免許証番号などの個人情報をお尋ねすることがあります。</p>
+
+                <h4 class="font-bold text-slate-800 mt-4">第3条（個人情報を収集・利用する目的）</h4>
+                <p>当社が個人情報を収集・利用する目的は、以下のとおりです。</p>
+                <ul class="list-disc pl-5 space-y-1">
+                    <li>当社サービスの提供・運営のため</li>
+                    <li>ユーザーからのお問い合わせに回答するため（本人確認を行うことを含む）</li>
+                    <li>ユーザーが利用中のサービスの新機能、更新情報、キャンペーン等及び当社が提供する他のサービスの案内のメールを送付するため</li>
+                    <li>メンテナンス、重要なお知らせなど必要に応じたご連絡のため</li>
+                </ul>
+
+                <h4 class="font-bold text-slate-800 mt-4">第4条（利用目的の変更）</h4>
+                <p>当社は、利用目的が変更前と関連性を有すると合理的に認められる場合に限り、個人情報の利用目的を変更するものとします。</p>
+
+                <h4 class="font-bold text-slate-800 mt-4">第5条（個人情報の第三者提供）</h4>
+                <p>当社は、次に掲げる場合を除いて、あらかじめユーザーの同意を得ることなく、第三者に個人情報を提供することはありません。ただし、個人情報保護法その他の法令で認められる場合を除きます。</p>
+
+                <h4 class="font-bold text-slate-800 mt-4">第6条（お問い合わせ窓口）</h4>
+                <p>本ポリシーに関するお問い合わせは、下記の窓口までお願いいたします。</p>
+                <div class="bg-slate-50 p-4 rounded mt-2">
+                    <p>住所：愛知県名古屋市中区錦1丁目17-13 名興ビルディング 2F</p>
+                    <p>社名：株式会社聖成</p>
+                    <p>電話番号：052-990-3526</p>
+                </div>
+            </div>
+            <div class="p-4 border-t border-slate-100 text-center bg-slate-50">
+                <button onclick="closePrivacyModal()" class="bg-slate-800 text-white px-8 py-2 rounded-lg hover:bg-slate-700 transition font-bold">
+                    閉じる
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- JavaScript Logic -->
     <script>
@@ -613,6 +713,21 @@
             content.classList.toggle('active');
             icon.classList.toggle('active');
         }
+
+        // --- プライバシーポリシーモーダル機能 ---
+        function openPrivacyModal() {
+            document.getElementById('privacy-modal').classList.add('active');
+            document.body.style.overflow = 'hidden'; // 背景スクロール固定
+        }
+        function closePrivacyModal() {
+            document.getElementById('privacy-modal').classList.remove('active');
+            document.body.style.overflow = ''; // スクロール解除
+        }
+        // モーダル背景クリックで閉じる
+        document.getElementById('privacy-modal').addEventListener('click', function(e) {
+            if (e.target === this) closePrivacyModal();
+        });
+
 
         // --- 画面遷移関数 ---
         function switchScreen(hideId, showId) {
