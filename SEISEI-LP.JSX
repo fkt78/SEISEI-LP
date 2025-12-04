@@ -3,202 +3,255 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>株式会社SEISEI | あなたの性格から導く最適キャリア</title>
+    <title>株式会社SEISEI | 性格マッチング転職</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap');
+        
         body {
             font-family: 'Noto Sans JP', sans-serif;
         }
-        .gradient-text {
-            background: linear-gradient(135deg, #2563EB, #06B6D4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .hero-bg {
-            background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7)), url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
-            background-size: cover;
-            background-position: center;
-        }
+
+        /* カスタムアニメーション */
         .fade-in {
-            animation: fadeIn 0.5s ease-in;
+            animation: fadeIn 0.4s ease-out forwards;
         }
+        
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        /* Checkbox custom style for better UX */
+
+        .pulse-ring {
+            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(37, 99, 235, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+        }
+
+        /* ヒーロー背景画像 */
+        .hero-bg {
+            background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7)), url('https://images.unsplash.com/photo-1497215728101-856f4ea42174?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
         .option-card:hover {
             border-color: #2563EB;
             background-color: #EFF6FF;
         }
-        .selected-option {
-            border-color: #2563EB;
-            background-color: #DBEAFE;
-            position: relative;
-        }
-        .selected-option::after {
-            content: '\f00c';
-            font-family: 'Font Awesome 5 Free';
-            font-weight: 900;
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            color: #2563EB;
+        
+        /* 質問進行バー */
+        .progress-step {
+            transition: all 0.3s ease;
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800">
+<body class="bg-slate-50 text-slate-800 antialiased">
 
-    <!-- Header -->
-    <header class="fixed w-full bg-white/90 backdrop-blur-sm shadow-sm z-50">
+    <!-- ヘッダー -->
+    <header class="fixed w-full bg-white/95 backdrop-blur-sm shadow-sm z-50 transition-all duration-300">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="text-2xl font-bold tracking-tight text-slate-900">
-                株式会社 <span class="text-blue-600">SEISEI</span>
-            </div>
-            <nav class="hidden md:flex space-x-8">
-                <a href="#about" class="hover:text-blue-600 transition">SEISEIについて</a>
-                <a href="#diagnosis" class="hover:text-blue-600 transition">性格診断</a>
-                <a href="#contact" class="bg-blue-600 text-white px-5 py-2 rounded-full hover:bg-blue-700 transition shadow-lg shadow-blue-200">
-                    まずは相談する
+            <a href="#" class="text-2xl font-bold tracking-tight text-slate-900 group">
+                株式会社 <span class="text-blue-600 group-hover:text-blue-500 transition">SEISEI</span>
+            </a>
+            <nav class="hidden md:flex space-x-8 items-center">
+                <a href="#about" class="text-sm font-medium hover:text-blue-600 transition">SEISEIの強み</a>
+                <a href="#diagnosis" class="text-sm font-medium hover:text-blue-600 transition">性格診断</a>
+                <a href="#contact" class="bg-blue-600 text-white px-6 py-2.5 rounded-full hover:bg-blue-700 transition shadow-lg shadow-blue-200 text-sm font-bold">
+                    無料相談する
                 </a>
             </nav>
+            <button class="md:hidden text-slate-600">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero-bg min-h-screen flex items-center pt-20">
-        <div class="container mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
-            <div class="space-y-8">
-                <span class="inline-block bg-blue-100 text-blue-800 px-4 py-1 rounded-full text-sm font-semibold mb-2">次世代の人材マッチング</span>
-                <h1 class="text-4xl md:text-6xl font-bold leading-tight">
+    <!-- ヒーローセクション -->
+    <section class="hero-bg min-h-screen flex items-center pt-20 relative overflow-hidden">
+        <div class="container mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center relative z-10">
+            <div class="space-y-8 text-center lg:text-left pt-10 lg:pt-0">
+                <div class="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-2">
+                    <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+                    適職診断実績 10,000件突破
+                </div>
+                <h1 class="text-4xl lg:text-6xl font-bold leading-tight tracking-tight">
                     スキルよりも、<br>
-                    <span class="gradient-text">「あなたらしさ」</span>で<br>
-                    選ばれる転職を。
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">「あなたらしさ」</span>で<br>
+                    選ばれるキャリアを。
                 </h1>
-                <p class="text-lg text-slate-600 leading-relaxed">
-                    株式会社SEISEIは、履歴書には書けないあなたの性格や価値観を重視。
-                    まずは3分の性格診断で、あなたの本当の適職を見つけませんか？
+                <p class="text-lg text-slate-600 leading-relaxed max-w-lg mx-auto lg:mx-0">
+                    「今の職場、なんとなく合わない...」<br>
+                    その違和感の正体は、あなたの性格と社風のミスマッチかもしれません。<br>
+                    16の質問から、あなたの本当のワークスタイルを見つけましょう。
                 </p>
-                <div class="flex flex-col sm:flex-row gap-4">
-                    <button onclick="scrollToDiagnosis()" class="bg-blue-600 text-white px-8 py-4 rounded-full text-lg font-bold hover:bg-blue-700 transition shadow-xl shadow-blue-200 flex items-center justify-center gap-2">
-                        <i class="fas fa-clipboard-check"></i> 性格診断を始める
+                
+                <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                    <button onclick="scrollToDiagnosis()" class="pulse-ring bg-blue-600 text-white px-8 py-4 rounded-full text-lg font-bold hover:bg-blue-700 transition shadow-xl shadow-blue-200 flex items-center justify-center gap-3">
+                        <i class="fas fa-clipboard-list"></i> 
+                        今すぐ診断を始める
                     </button>
-                    <a href="#about" class="bg-white text-slate-700 border border-slate-300 px-8 py-4 rounded-full text-lg font-bold hover:bg-slate-50 transition flex items-center justify-center">
+                    <a href="#about" class="bg-white/80 backdrop-blur text-slate-700 border border-slate-300 px-8 py-4 rounded-full text-lg font-bold hover:bg-white transition flex items-center justify-center shadow-sm">
                         詳しく見る
                     </a>
                 </div>
             </div>
-            <div class="hidden md:block">
-                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Consulting" class="rounded-2xl shadow-2xl transform rotate-2 hover:rotate-0 transition duration-500">
-            </div>
-        </div>
-    </section>
-
-    <!-- Concept Section -->
-    <section id="about" class="py-20 bg-white">
-        <div class="container mx-auto px-6 text-center max-w-4xl">
-            <h2 class="text-3xl font-bold mb-6">なぜ、「性格」なのか？</h2>
-            <p class="text-slate-600 mb-12 leading-loose">
-                多くの転職が「スキルの不一致」ではなく「カルチャーの不一致」で失敗しています。<br>
-                SEISEIは、独自のアルゴリズムであなたの性格特性を分析。<br>
-                あなたらしく輝ける環境こそが、最高のパフォーマンスを生み出すと信じています。
-            </p>
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="p-6 bg-slate-50 rounded-xl">
-                    <div class="w-14 h-14 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
-                        <i class="fas fa-heart"></i>
+            
+            <!-- スマホ画面風イメージ -->
+            <div class="hidden lg:block relative pl-10">
+                <div class="absolute -top-10 -right-10 w-80 h-80 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
+                <div class="relative bg-white p-6 rounded-2xl shadow-2xl border border-slate-100 max-w-sm mx-auto transform rotate-2">
+                    <div class="border-b pb-4 mb-4">
+                        <h4 class="font-bold text-lg text-slate-800">こんな悩みありませんか？</h4>
                     </div>
-                    <h3 class="font-bold text-xl mb-2">価値観マッチング</h3>
-                    <p class="text-sm text-slate-500">企業のビジョンと個人の想いが重なる場所をご提案します。</p>
-                </div>
-                <div class="p-6 bg-slate-50 rounded-xl">
-                    <div class="w-14 h-14 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
-                        <i class="fas fa-chart-pie"></i>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3 text-slate-600 bg-slate-50 p-3 rounded-lg">
+                            <i class="fas fa-check-circle text-blue-500 text-xl"></i>
+                            <span>頑張っても正当に評価されない</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-slate-600 bg-slate-50 p-3 rounded-lg">
+                            <i class="fas fa-check-circle text-blue-500 text-xl"></i>
+                            <span>上司の顔色ばかり伺っている</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-slate-600 bg-slate-50 p-3 rounded-lg">
+                            <i class="fas fa-check-circle text-blue-500 text-xl"></i>
+                            <span>将来のキャリアが見えない</span>
+                        </div>
                     </div>
-                    <h3 class="font-bold text-xl mb-2">独自診断データ</h3>
-                    <p class="text-sm text-slate-500">5万人のデータに基づく精度の高い性格分析ツールを使用。</p>
-                </div>
-                <div class="p-6 bg-slate-50 rounded-xl">
-                    <div class="w-14 h-14 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
-                        <i class="fas fa-comments"></i>
+                    <div class="mt-6 text-center">
+                        <span class="text-xs text-slate-400">1つでも当てはまるなら...</span>
+                        <div class="mt-2 bg-blue-600 text-white py-2 rounded-lg font-bold text-sm">
+                            無料診断へ進む
+                        </div>
                     </div>
-                    <h3 class="font-bold text-xl mb-2">深いヒアリング</h3>
-                    <p class="text-sm text-slate-500">診断結果をもとに、専任のエージェントが丁寧に壁打ちします。</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Diagnosis App Section -->
-    <section id="diagnosis" class="py-20 bg-slate-100">
-        <div class="container mx-auto px-6 max-w-3xl">
+    <!-- 診断アプリセクション (メインコンテンツ) -->
+    <section id="diagnosis" class="py-24 bg-gradient-to-b from-slate-50 to-blue-50 scroll-mt-20">
+        <div class="container mx-auto px-4 max-w-3xl">
             <div class="text-center mb-10">
-                <span class="text-blue-600 font-bold tracking-widest uppercase text-sm">DIAGNOSIS</span>
-                <h2 class="text-3xl font-bold mt-2">あなたの適職タイプ診断</h2>
-                <p class="text-slate-500 mt-4">簡単な3つの質問に答えるだけで、あなたの強みが見えてきます。</p>
+                <span class="text-blue-600 font-bold tracking-widest uppercase text-xs">DIAGNOSIS</span>
+                <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-4">適職タイプ診断</h2>
+                <p class="text-slate-500">あなたの価値観を深掘りする16の質問。</p>
             </div>
 
-            <!-- Diagnosis Card -->
-            <div class="bg-white rounded-2xl shadow-xl overflow-hidden min-h-[400px] relative">
+            <!-- 診断カードコンテナ -->
+            <div class="bg-white rounded-3xl shadow-2xl overflow-hidden min-h-[550px] relative border border-slate-100 flex flex-col">
                 
-                <!-- Start Screen -->
-                <div id="diag-start" class="absolute inset-0 p-8 flex flex-col items-center justify-center text-center fade-in">
-                    <div class="mb-6 text-6xl text-blue-500">
-                        <i class="fas fa-search-plus"></i>
+                <!-- 1. スタート画面 -->
+                <div id="diag-start" class="absolute inset-0 p-8 md:p-12 flex flex-col items-center justify-center text-center fade-in z-10 bg-white">
+                    <div class="mb-6 relative">
+                        <div class="absolute inset-0 bg-blue-100 rounded-full blur-xl opacity-70 animate-pulse"></div>
+                        <div class="relative bg-white p-6 rounded-full shadow-md text-6xl text-blue-600">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
                     </div>
-                    <h3 class="text-2xl font-bold mb-4">準備はいいですか？</h3>
-                    <p class="text-slate-500 mb-8">所要時間は約30秒です。<br>直感でお答えください。</p>
-                    <button onclick="startDiagnosis()" class="bg-blue-600 text-white px-10 py-3 rounded-full font-bold hover:bg-blue-700 transition w-full md:w-auto">
+                    <h3 class="text-2xl font-bold mb-4">あなたの「ワークスタイル」を分析</h3>
+                    <p class="text-slate-500 mb-8 leading-relaxed max-w-md mx-auto">
+                        全16問の質問に答えるだけで、<br>
+                        あなたに本当に合った働き方や企業タイプを診断します。<br>
+                        <span class="text-sm text-blue-600 font-bold mt-2 block">直感でお答えください。</span>
+                    </p>
+                    <button onclick="startDiagnosis()" class="w-full md:w-auto bg-blue-600 text-white px-16 py-4 rounded-full font-bold hover:bg-blue-700 hover:shadow-lg hover:-translate-y-1 transition transform duration-200">
                         診断スタート
                     </button>
-                </div>
-
-                <!-- Question Screen -->
-                <div id="diag-question" class="absolute inset-0 p-8 flex flex-col justify-between hidden">
-                    <div>
-                        <div class="flex justify-between items-center mb-6">
-                            <span class="text-sm font-bold text-slate-400">QUESTION <span id="q-number">1</span>/3</span>
-                            <div class="h-2 w-24 bg-slate-100 rounded-full overflow-hidden">
-                                <div id="progress-bar" class="h-full bg-blue-500 w-1/3 transition-all duration-300"></div>
-                            </div>
-                        </div>
-                        <h3 id="q-text" class="text-xl font-bold mb-8">休日の過ごし方はどちらに近いですか？</h3>
-                        <div class="space-y-4">
-                            <button onclick="selectOption(0)" class="option-card w-full text-left p-4 border-2 border-slate-100 rounded-xl transition flex items-center justify-between group">
-                                <span id="opt-1" class="font-medium">家でゆっくり自分の時間を楽しむ</span>
-                                <i class="fas fa-chevron-right text-slate-300 group-hover:text-blue-500"></i>
-                            </button>
-                            <button onclick="selectOption(1)" class="option-card w-full text-left p-4 border-2 border-slate-100 rounded-xl transition flex items-center justify-between group">
-                                <span id="opt-2" class="font-medium">外に出かけて人と会ったり活動する</span>
-                                <i class="fas fa-chevron-right text-slate-300 group-hover:text-blue-500"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="text-center">
-                        <button onclick="resetDiagnosis()" class="text-slate-400 text-sm hover:text-slate-600 underline">最初からやり直す</button>
+                    <div class="mt-6 flex items-center justify-center gap-4 text-xs text-slate-400">
+                        <span><i class="fas fa-clock mr-1"></i>所要時間 約2分</span>
+                        <span><i class="fas fa-user-shield mr-1"></i>匿名回答OK</span>
                     </div>
                 </div>
 
-                <!-- Result Screen -->
-                <div id="diag-result" class="absolute inset-0 p-8 flex flex-col items-center justify-center text-center hidden overflow-y-auto">
-                    <div class="w-full">
-                        <p class="text-sm text-slate-500 font-bold mb-2">あなたのタイプは...</p>
-                        <h3 id="result-title" class="text-3xl font-bold text-blue-600 mb-4">革新的なリーダータイプ</h3>
-                        <div class="bg-blue-50 p-6 rounded-xl mb-6 text-left">
-                            <p id="result-desc" class="text-slate-700 text-sm leading-relaxed mb-4">
-                                あなたは新しいことに挑戦するのが得意で、周囲を巻き込む力があります。定型業務よりも、裁量権のあるプロジェクトや新規事業での活躍が期待できます。
-                            </p>
-                            <div class="flex items-center gap-2 text-xs font-bold text-blue-800">
-                                <i class="fas fa-briefcase"></i>
-                                <span>おすすめ職種: 企画職 / プロジェクトマネージャー / コンサルタント</span>
+                <!-- 2. 質問画面（動的生成） -->
+                <div id="diag-question" class="absolute inset-0 flex flex-col hidden bg-white z-10">
+                    <!-- ヘッダー部分 -->
+                    <div class="px-6 pt-6 pb-2 border-b border-slate-50">
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-xs font-bold text-slate-400 tracking-wider">Q<span id="q-number" class="text-blue-600 text-lg ml-1">1</span> / <span id="q-total">16</span></span>
+                            <div class="h-2 w-32 bg-slate-100 rounded-full overflow-hidden">
+                                <div id="progress-bar" class="h-full bg-blue-600 w-0 transition-all duration-300 ease-out"></div>
                             </div>
                         </div>
-                        <p class="text-sm text-slate-500 mb-4">この結果をもとに、<br>SEISEIのキャリアアドバイザーと話してみませんか？</p>
-                        <button onclick="scrollToContact()" class="bg-orange-500 text-white px-8 py-3 rounded-full font-bold hover:bg-orange-600 transition shadow-lg shadow-orange-200 w-full animate-bounce">
-                            この結果で無料相談する <i class="fas fa-arrow-down ml-2"></i>
-                        </button>
+                    </div>
+
+                    <!-- 質問と選択肢部分 -->
+                    <div class="flex-1 flex flex-col justify-center items-center p-6 md:p-10 overflow-y-auto custom-scrollbar">
+                        <div id="question-container" class="w-full max-w-lg mx-auto text-center">
+                            <h3 id="q-text" class="text-xl md:text-2xl font-bold leading-snug mb-10 h-20 flex items-center justify-center">
+                                <!-- JSで挿入 -->
+                            </h3>
+
+                            <div class="space-y-4 w-full">
+                                <button onclick="selectOption(2)" class="option-card w-full p-4 border-2 border-slate-200 rounded-xl transition-all duration-200 hover:shadow-md bg-white font-bold text-slate-700 hover:text-blue-600">
+                                    はい
+                                </button>
+                                <button onclick="selectOption(1)" class="option-card w-full p-4 border-2 border-slate-200 rounded-xl transition-all duration-200 hover:shadow-md bg-white font-bold text-slate-700 hover:text-blue-600">
+                                    どちらでもない
+                                </button>
+                                <button onclick="selectOption(0)" class="option-card w-full p-4 border-2 border-slate-200 rounded-xl transition-all duration-200 hover:shadow-md bg-white font-bold text-slate-700 hover:text-blue-600">
+                                    いいえ
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. 分析中画面 -->
+                <div id="diag-loading" class="absolute inset-0 flex flex-col items-center justify-center bg-white hidden z-20">
+                    <div class="w-64 bg-slate-100 rounded-full h-2 mb-6 overflow-hidden">
+                        <div class="h-full bg-blue-600 animate-[loading_1.5s_ease-in-out_infinite] w-1/2"></div>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">診断結果を作成中...</h3>
+                    <p class="text-sm text-slate-500">あなたの回答パターンを分析しています</p>
+                </div>
+
+                <!-- 4. 結果画面 -->
+                <div id="diag-result" class="absolute inset-0 flex flex-col hidden bg-slate-50 z-10 overflow-hidden">
+                    <div class="flex-1 overflow-y-auto custom-scrollbar p-6 md:p-10">
+                        <div class="w-full max-w-lg mx-auto bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-100">
+                            <div class="text-center mb-6">
+                                <span class="inline-block px-3 py-1 bg-blue-600 text-white text-xs font-bold rounded-full mb-3">診断完了</span>
+                                <p class="text-sm text-slate-500 font-bold mb-1">あなたに最適なタイプは...</p>
+                                <h3 id="result-title" class="text-2xl md:text-3xl font-extrabold text-blue-700 mb-2">
+                                    <!-- JSで挿入 -->
+                                </h3>
+                                <div class="w-full h-px bg-slate-100 my-4"></div>
+                            </div>
+
+                            <div class="bg-blue-50 p-5 rounded-xl mb-6 text-left border border-blue-100">
+                                <h4 class="font-bold text-blue-900 mb-2 text-sm">
+                                    <i class="fas fa-search-plus mr-1"></i> タイプ分析結果
+                                </h4>
+                                <p id="result-desc" class="text-slate-700 text-sm leading-relaxed mb-4">
+                                    <!-- JSで挿入 -->
+                                </p>
+                            </div>
+
+                            <div class="text-center space-y-4">
+                                <p class="text-xs text-slate-500 font-bold">
+                                    ▼ この結果について詳しく相談する ▼
+                                </p>
+                                <button onclick="scrollToContact()" class="w-full bg-orange-500 text-white px-6 py-4 rounded-xl font-bold hover:bg-orange-600 transition shadow-lg shadow-orange-100 animate-pulse text-lg">
+                                    無料相談で求人リストを受け取る
+                                </button>
+                                <div class="pt-2">
+                                    <button onclick="resetDiagnosis()" class="text-xs text-slate-400 hover:text-blue-600 underline">
+                                        <i class="fas fa-redo mr-1"></i>診断をやり直す
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -206,177 +259,222 @@
         </div>
     </section>
 
-    <!-- Contact Section -->
-    <section id="contact" class="py-20 bg-white">
+    <!-- コンタクトフォーム -->
+    <section id="contact" class="py-24 bg-white">
         <div class="container mx-auto px-6 max-w-2xl">
-            <div class="text-center mb-10">
-                <h2 class="text-3xl font-bold">無料キャリア相談のお申し込み</h2>
-                <p class="text-slate-500 mt-4">診断結果を元に、あなたにぴったりの企業をご紹介します。</p>
+            <div class="text-center mb-12">
+                <span class="text-blue-600 font-bold tracking-widest uppercase text-xs">CONTACT</span>
+                <h2 class="text-3xl font-bold mt-2">無料キャリア相談申し込み</h2>
+                <p class="text-slate-500 mt-4">SEISEIのエージェントが、あなたの「性格」に合う企業だけをご提案します。</p>
             </div>
 
-            <form class="space-y-6" onsubmit="submitForm(event)">
-                <div class="grid md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">お名前 <span class="text-red-500">*</span></label>
-                        <input type="text" placeholder="山田 太郎" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition" required>
+            <form class="bg-white p-8 md:p-10 rounded-3xl shadow-xl border border-slate-100" onsubmit="submitForm(event)">
+                <div class="space-y-6">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-2">お名前 <span class="text-red-500">*</span></label>
+                            <input type="text" placeholder="山田 太郎" class="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100 outline-none transition" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-2">メールアドレス <span class="text-red-500">*</span></label>
+                            <input type="email" placeholder="example@seisei.co.jp" class="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100 outline-none transition" required>
+                        </div>
                     </div>
+
                     <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">メールアドレス <span class="text-red-500">*</span></label>
-                        <input type="email" placeholder="example@seisei.co.jp" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition" required>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">ご相談内容</label>
+                        <div class="relative">
+                            <textarea id="contact-message" rows="6" class="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100 outline-none transition resize-none" placeholder="まずは相談したい、など"></textarea>
+                            <div class="absolute bottom-3 right-3 text-xs text-slate-400 bg-white/80 px-2 rounded border border-slate-100 shadow-sm">
+                                <i class="fas fa-magic text-blue-400 mr-1"></i>診断結果反映済み
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">診断結果 / お問い合わせ内容</label>
-                    <textarea id="contact-message" rows="4" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition" placeholder="まずは相談したい、など"></textarea>
-                    <p class="text-xs text-slate-400 mt-1"><i class="fas fa-info-circle"></i> 診断後にボタンを押すと、結果が自動で入力されます。</p>
+                    <button type="submit" class="w-full bg-blue-600 text-white text-lg font-bold py-4 rounded-xl hover:bg-blue-700 transition shadow-xl shadow-blue-100 transform active:scale-95 duration-100">
+                        上記の内容で送信する
+                    </button>
+                    
+                    <p class="text-center text-xs text-slate-400 mt-4">
+                        個人情報は厳重に管理され、同意なく第三者に提供されることはありません。
+                    </p>
                 </div>
-
-                <button type="submit" class="w-full bg-blue-600 text-white font-bold py-4 rounded-lg hover:bg-blue-700 transition shadow-lg">
-                    上記の内容で送信する
-                </button>
             </form>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="bg-slate-900 text-white py-12">
-        <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center">
-            <div class="mb-6 md:mb-0">
-                <div class="text-2xl font-bold tracking-tight mb-2">
-                    株式会社 <span class="text-blue-400">SEISEI</span>
+    <!-- フッター -->
+    <footer class="bg-slate-900 text-white py-12 border-t border-slate-800">
+        <div class="container mx-auto px-6 text-center md:text-left">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-8">
+                <div class="mb-6 md:mb-0">
+                    <div class="text-2xl font-bold tracking-tight mb-2">
+                        株式会社 <span class="text-blue-400">SEISEI</span>
+                    </div>
+                    <p class="text-slate-400 text-sm">あなたの個性が、未来をつくる。</p>
                 </div>
-                <p class="text-slate-400 text-sm">一人ひとりの「生成」された可能性を、未来へ。</p>
+                <div class="flex gap-6 text-sm text-slate-400">
+                    <a href="#" class="hover:text-white transition">会社概要</a>
+                    <a href="#" class="hover:text-white transition">プライバシーポリシー</a>
+                </div>
             </div>
-            <div class="flex space-x-6 text-sm text-slate-400">
-                <a href="#" class="hover:text-white transition">会社概要</a>
-                <a href="#" class="hover:text-white transition">プライバシーポリシー</a>
-                <a href="#" class="hover:text-white transition">利用規約</a>
+            <div class="border-t border-slate-800 pt-8 text-slate-600 text-xs">
+                &copy; 2024 SEISEI Inc. All rights reserved.
             </div>
-        </div>
-        <div class="text-center text-slate-600 text-xs mt-8">
-            &copy; 2024 SEISEI Inc. All rights reserved.
         </div>
     </footer>
 
-    <!-- Scripts -->
+    <!-- JavaScript Logic -->
     <script>
-        // Smooth Scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
+        // --- 設定データ ---
+        // 指定URLから抽出した全16問
+        const questions = [
+            "ひとりで仕事をする方が好き",
+            "出社するよりも在宅で働きたい",
+            "好きなことを仕事にしたい",
+            "仕事よりも趣味を優先したい",
+            "予定を立てるより、気分で動く方が好き",
+            "収入よりも自由を優先したい",
+            "仕事はきっちり計画を立てる方だ",
+            "仕事が生きがいだと思う",
+            "カフェで仕事をするのが好き",
+            "雑音のある場所や外の方が集中できる",
+            "仕事よりも彼女（パートナー）との時間を優先したい",
+            "仕事のスケジュールは恋人の都合に合わせたい",
+            "旅をしながら働くのに憧れる",
+            "どこでも働ける環境が理想",
+            "自然の中や開放的な場所で仕事をしたい",
+            "休日はアウトドアを楽しみたい"
+        ];
 
+        // 状態管理変数
+        let currentStep = 0;
+        let totalScore = 0; // はい=2, どちらでもない=1, いいえ=0
+
+        // --- 画面遷移関数 ---
+        function switchScreen(hideId, showId) {
+            const hideEl = document.getElementById(hideId);
+            const showEl = document.getElementById(showId);
+            hideEl.classList.remove('fade-in');
+            hideEl.classList.add('hidden');
+            showEl.classList.remove('hidden');
+            showEl.classList.add('fade-in');
+        }
+
+        function startDiagnosis() {
+            switchScreen('diag-start', 'diag-question');
+            renderQuestion();
+        }
+
+        // --- 質問描画ロジック ---
+        function renderQuestion() {
+            // プログレスバー更新
+            const progress = ((currentStep + 1) / questions.length) * 100;
+            document.getElementById('q-number').innerText = currentStep + 1;
+            document.getElementById('q-total').innerText = questions.length;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+            
+            // 質問文更新
+            const qContainer = document.getElementById('question-container');
+            // フェード効果のために一度クラスを外す
+            qContainer.classList.remove('fade-in');
+            void qContainer.offsetWidth; // リフロー
+            qContainer.classList.add('fade-in');
+
+            document.getElementById('q-text').innerText = questions[currentStep];
+        }
+
+        function selectOption(score) {
+            totalScore += score;
+            
+            if (currentStep < questions.length - 1) {
+                currentStep++;
+                renderQuestion();
+            } else {
+                finishDiagnosis();
+            }
+        }
+
+        // --- 診断完了・結果表示 ---
+        function finishDiagnosis() {
+            switchScreen('diag-question', 'diag-loading');
+            
+            // ローディング演出
+            setTimeout(() => {
+                switchScreen('diag-loading', 'diag-result');
+                showResultDetails();
+            }, 1500);
+        }
+
+        function showResultDetails() {
+            const titleEl = document.getElementById('result-title');
+            const descEl = document.getElementById('result-desc');
+            
+            // 仮ロジック：合計スコア(Max 32)に基づいて判定
+            // 質問内容が「自由・在宅・マイペース」寄りなので、スコアが高いほどフリーランス向き
+            
+            if (totalScore >= 24) {
+                // High Score: 自由重視
+                titleEl.innerText = "【自由奔放】ノマドワーカータイプ";
+                descEl.innerText = "あなたは場所や時間に縛られない働き方を強く求めています。高い自律性を持ち、自分のペースで仕事を進める環境で最大のパフォーマンスを発揮します。完全リモートやフルフレックス、成果報酬型の企業が適しています。";
+            } else if (totalScore >= 12) {
+                // Mid Score: バランス重視
+                titleEl.innerText = "【堅実派】ハイブリッドワーカータイプ";
+                descEl.innerText = "あなたは自由と安定のバランスを大切にするタイプです。適度な自由は欲しいけれど、チームとの繋がりや組織の安定感も捨てがたいと考えています。週2~3日のリモートワークや、副業OKな柔軟な企業がおすすめです。";
+            } else {
+                // Low Score: 安定/オフィス重視
+                titleEl.innerText = "【組織重視】オフィススペシャリストタイプ";
+                descEl.innerText = "あなたは整った環境で、チームと密に連携しながら働くことに喜びを感じます。オンオフの切り替えを明確にし、オフィスという「場」で集中して成果を出すことが得意です。安定した基盤のある企業や、チームワーク重視の職場が適しています。";
+            }
+        }
+
+        // --- フォーム連携 ---
         function scrollToDiagnosis() {
-            document.getElementById('diagnosis').scrollIntoView({ behavior: 'smooth' });
+            const target = document.getElementById('diagnosis');
+            if(target) target.scrollIntoView({ behavior: 'smooth' });
         }
 
         function scrollToContact() {
-            document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+            const target = document.getElementById('contact');
+            if(target) target.scrollIntoView({ behavior: 'smooth' });
             
-            // Auto-fill the message with the result
             const resultTitle = document.getElementById('result-title').innerText;
             const messageBox = document.getElementById('contact-message');
-            messageBox.value = `【診断結果: ${resultTitle}】\nこの診断結果について詳しく話を聞きたいです。\nまた、自分に合う企業があれば紹介してください。`;
-            
-            // Highlight the text area
+
             setTimeout(() => {
+                messageBox.value = `【診断結果: ${resultTitle}】\n（スコア: ${totalScore}/${questions.length * 2}）\n\n診断結果を見ました。この結果に基づいた求人や働き方について相談したいです。`;
                 messageBox.focus();
                 messageBox.classList.add('ring-2', 'ring-blue-200', 'border-blue-500');
             }, 800);
         }
 
-        // Diagnosis Logic
-        const questions = [
-            {
-                text: "新しい環境や変化に対してどう感じますか？",
-                options: ["ワクワクする・刺激が欲しい", "少し不安・安定を好む"]
-            },
-            {
-                text: "仕事を進める上でのスタイルは？",
-                options: ["チームで協力して進めたい", "自分のペースで集中したい"]
-            },
-            {
-                text: "評価されるならどちらが嬉しい？",
-                options: ["成果や数字での明確な評価", "プロセスや努力への感謝"]
-            }
-        ];
-
-        // Simple logic: count selections. 
-        // 0 = type A (Active), 1 = type B (Steady)
-        let currentStep = 0;
-        let score = 0;
-
-        function startDiagnosis() {
-            document.getElementById('diag-start').classList.add('hidden');
-            document.getElementById('diag-question').classList.remove('hidden');
-            document.getElementById('diag-question').classList.add('fade-in');
-            showQuestion();
-        }
-
-        function showQuestion() {
-            const q = questions[currentStep];
-            document.getElementById('q-number').innerText = currentStep + 1;
-            document.getElementById('progress-bar').style.width = `${((currentStep + 1) / 3) * 100}%`;
-            document.getElementById('q-text').innerText = q.text;
-            document.getElementById('opt-1').innerText = q.options[0];
-            document.getElementById('opt-2').innerText = q.options[1];
-        }
-
-        function selectOption(optionIndex) {
-            score += optionIndex; // Add 0 or 1
-            
-            if (currentStep < 2) {
-                currentStep++;
-                // Slight delay for animation feel
-                document.getElementById('diag-question').classList.remove('fade-in');
-                void document.getElementById('diag-question').offsetWidth; // trigger reflow
-                document.getElementById('diag-question').classList.add('fade-in');
-                showQuestion();
-            } else {
-                showResult();
-            }
-        }
-
-        function showResult() {
-            document.getElementById('diag-question').classList.add('hidden');
-            document.getElementById('diag-result').classList.remove('hidden');
-            document.getElementById('diag-result').classList.add('fade-in');
-
-            // Determine Result based on score (0-3)
-            // Low score = Active/Innovator, High score = Support/Steady
-            const titleEl = document.getElementById('result-title');
-            const descEl = document.getElementById('result-desc');
-
-            if (score <= 1) {
-                titleEl.innerText = "開拓者：イノベータータイプ";
-                descEl.innerText = "あなたは変化を恐れず、新しい価値を創造することに喜びを感じます。スタートアップや新規事業開発、または裁量の大きい営業職などでその才能が発揮されるでしょう。SEISEIでは、成長中のベンチャー企業をご紹介できます。";
-            } else if (score === 2) {
-                titleEl.innerText = "調和者：バランサータイプ";
-                descEl.innerText = "あなたは周囲との協調性を大切にしつつ、着実に成果を上げるバランス感覚に優れています。チームリーダーや顧客折衝を行うポジション、または安定した組織の中核として活躍できます。";
-            } else {
-                titleEl.innerText = "探求者：スペシャリストタイプ";
-                descEl.innerText = "あなたは一つのことを突き詰め、深い専門性を持つことに適性があります。エンジニア、研究職、またはバックオフィスでの専門職など、落ち着いて業務に集中できる環境がおすすめです。";
-            }
-        }
-
         function resetDiagnosis() {
             currentStep = 0;
-            score = 0;
+            totalScore = 0;
+            
             document.getElementById('diag-result').classList.add('hidden');
-            document.getElementById('diag-question').classList.add('hidden');
             document.getElementById('diag-start').classList.remove('hidden');
+            document.getElementById('diag-start').classList.add('fade-in');
         }
 
         function submitForm(e) {
             e.preventDefault();
-            alert('お問い合わせありがとうございます！\n株式会社SEISEIの担当者より、24時間以内にご連絡いたします。\n診断結果に基づいた求人をいくつかピックアップしてお待ちしております。');
-            // Here you would typically send data to a server
+            alert('お問い合わせありがとうございます！\n\n株式会社SEISEIの担当者より、24時間以内にご連絡いたします。');
         }
+
+        // スムーズスクロール
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
     </script>
 </body>
 </html>
