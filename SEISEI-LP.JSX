@@ -72,7 +72,7 @@
             transform: rotate(180deg);
         }
 
-        /* モーダル（プライバシーポリシー用） */
+        /* モーダル共通スタイル */
         .modal {
             opacity: 0;
             visibility: hidden;
@@ -92,17 +92,20 @@
             <a href="#" class="text-2xl font-bold tracking-tight text-slate-900 group">
                 株式会社 <span class="text-blue-600 group-hover:text-blue-500 transition">SEISEI</span>
             </a>
-            <nav class="hidden md:flex space-x-6 items-center">
-                <a href="#about" class="text-sm font-medium hover:text-blue-600 transition">強み</a>
+            <!-- PC用ナビゲーション -->
+            <nav class="hidden lg:flex space-x-5 items-center">
+                <a href="#about" class="text-sm font-medium hover:text-blue-600 transition">当社の強み</a>
                 <a href="#diagnosis" class="text-sm font-medium hover:text-blue-600 transition">性格診断</a>
-                <a href="#flow" class="text-sm font-medium hover:text-blue-600 transition">流れ</a>
+                <a href="#flow" class="text-sm font-medium hover:text-blue-600 transition">ご入社までの流れ</a>
+                <a href="#voice" class="text-sm font-medium hover:text-blue-600 transition">転職成功者の声</a>
                 <a href="#faq" class="text-sm font-medium hover:text-blue-600 transition">Q&A</a>
                 <a href="#company" class="text-sm font-medium hover:text-blue-600 transition">会社概要</a>
-                <a href="#contact" class="bg-blue-600 text-white px-6 py-2.5 rounded-full hover:bg-blue-700 transition shadow-lg shadow-blue-200 text-sm font-bold">
+                <a href="#contact" class="bg-blue-600 text-white px-5 py-2.5 rounded-full hover:bg-blue-700 transition shadow-lg shadow-blue-200 text-sm font-bold">
                     無料相談する
                 </a>
             </nav>
-            <button class="md:hidden text-slate-600">
+            <!-- モバイル用ハンバーガーメニュー（簡易実装） -->
+            <button class="lg:hidden text-slate-600">
                 <i class="fas fa-bars text-xl"></i>
             </button>
         </div>
@@ -345,7 +348,7 @@
         <div class="container mx-auto px-6 max-w-5xl">
             <div class="text-center mb-16">
                 <span class="text-blue-600 font-bold tracking-widest uppercase text-xs">FLOW</span>
-                <h2 class="text-3xl font-bold mt-2">ご相談から入社までの流れ</h2>
+                <h2 class="text-3xl font-bold mt-2">ご入社までの流れ</h2>
                 <div class="w-16 h-1 bg-blue-600 mx-auto mt-4 rounded"></div>
             </div>
 
@@ -619,8 +622,8 @@
                 </div>
                 <div class="flex gap-6 text-sm text-slate-400">
                     <a href="#company" class="hover:text-white transition">会社概要</a>
+                    <button onclick="openTermsModal()" class="hover:text-white transition underline decoration-dotted">利用規約</button>
                     <button onclick="openPrivacyModal()" class="hover:text-white transition underline decoration-dotted">プライバシーポリシー</button>
-                    <a href="#" class="hover:text-white transition">利用規約</a>
                 </div>
             </div>
             <div class="border-t border-slate-800 pt-8 text-slate-600 text-xs">
@@ -678,6 +681,65 @@
         </div>
     </div>
 
+    <!-- 利用規約モーダル -->
+    <div id="terms-modal" class="fixed inset-0 z-[100] flex items-center justify-center modal bg-black/50 backdrop-blur-sm p-4">
+        <div class="bg-white w-full max-w-2xl max-h-[80vh] rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                <h3 class="text-xl font-bold">利用規約</h3>
+                <button onclick="closeTermsModal()" class="text-slate-400 hover:text-slate-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto text-sm text-slate-600 leading-relaxed space-y-4">
+                <p>この利用規約（以下，「本規約」といいます。）は，株式会社聖成（以下，「当社」といいます。）がこのウェブサイト上で提供するサービス（以下，「本サービス」といいます。）の利用条件を定めるものです。登録ユーザーの皆さま（以下，「ユーザー」といいます。）には，本規約に従って，本サービスをご利用いただきます。</p>
+                
+                <h4 class="font-bold text-slate-800 mt-4">第1条（適用）</h4>
+                <p>本規約は，ユーザーと当社との間の本サービスの利用に関わる一切の関係に適用されるものとします。</p>
+
+                <h4 class="font-bold text-slate-800 mt-4">第2条（利用登録）</h4>
+                <p>登録希望者が当社の定める方法によって利用登録を申請し，当社がこれを承認することによって，利用登録が完了するものとします。</p>
+
+                <h4 class="font-bold text-slate-800 mt-4">第3条（禁止事項）</h4>
+                <p>ユーザーは，本サービスの利用にあたり，以下の行為をしてはなりません。</p>
+                <ul class="list-disc pl-5 space-y-1">
+                    <li>法令または公序良俗に違反する行為</li>
+                    <li>犯罪行為に関連する行為</li>
+                    <li>当社のサーバーまたはネットワークの機能を破壊したり，妨害したりする行為</li>
+                    <li>当社のサービスの運営を妨害するおそれのある行為</li>
+                    <li>他のユーザーに関する個人情報等を収集または蓄積する行為</li>
+                    <li>他のユーザーに成りすます行為</li>
+                    <li>反社会的勢力に対して直接または間接に利益を供与する行為</li>
+                </ul>
+
+                <h4 class="font-bold text-slate-800 mt-4">第4条（本サービスの提供の停止等）</h4>
+                <p>当社は，以下のいずれかの事由があると判断した場合，ユーザーに事前に通知することなく本サービスの全部または一部の提供を停止または中断することができるものとします。</p>
+                <ul class="list-disc pl-5 space-y-1">
+                    <li>本サービスにかかるコンピュータシステムの保守点検または更新を行う場合</li>
+                    <li>地震，落雷，火災，停電または天災などの不可抗力により，本サービスの提供が困難となった場合</li>
+                    <li>コンピュータまたは通信回線等が事故により停止した場合</li>
+                    <li>その他，当社が本サービスの提供が困難と判断した場合</li>
+                </ul>
+
+                <h4 class="font-bold text-slate-800 mt-4">第5条（免責事項）</h4>
+                <p>当社の債務不履行責任は，当社の故意または重過失によらない場合には免責されるものとします。当社は，本サービスに関して，ユーザーと他のユーザーまたは第三者との間において生じた取引，連絡または紛争等について一切責任を負いません。</p>
+
+                <h4 class="font-bold text-slate-800 mt-4">第6条（サービス内容の変更等）</h4>
+                <p>当社は，ユーザーに通知することなく，本サービスの内容を変更しまたは本サービスの提供を中止することができるものとし，これによってユーザーに生じた損害について一切の責任を負いません。</p>
+
+                <h4 class="font-bold text-slate-800 mt-4">第7条（利用規約の変更）</h4>
+                <p>当社は，必要と判断した場合には，ユーザーに通知することなくいつでも本規約を変更することができるものとします。</p>
+
+                <h4 class="font-bold text-slate-800 mt-4">第8条（準拠法・裁判管轄）</h4>
+                <p>本規約の解釈にあたっては，日本法を準拠法とします。本サービスに関して紛争が生じた場合には，当社の本店所在地を管轄する裁判所を専属的合意管轄裁判所とします。</p>
+            </div>
+            <div class="p-4 border-t border-slate-100 text-center bg-slate-50">
+                <button onclick="closeTermsModal()" class="bg-slate-800 text-white px-8 py-2 rounded-lg hover:bg-slate-700 transition font-bold">
+                    閉じる
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- JavaScript Logic -->
     <script>
         // --- 設定データ ---
@@ -714,7 +776,9 @@
             icon.classList.toggle('active');
         }
 
-        // --- プライバシーポリシーモーダル機能 ---
+        // --- モーダル機能（プライバシーポリシー＆利用規約） ---
+        
+        // プライバシーポリシー
         function openPrivacyModal() {
             document.getElementById('privacy-modal').classList.add('active');
             document.body.style.overflow = 'hidden'; // 背景スクロール固定
@@ -723,10 +787,28 @@
             document.getElementById('privacy-modal').classList.remove('active');
             document.body.style.overflow = ''; // スクロール解除
         }
-        // モーダル背景クリックで閉じる
-        document.getElementById('privacy-modal').addEventListener('click', function(e) {
-            if (e.target === this) closePrivacyModal();
-        });
+        
+        // 利用規約
+        function openTermsModal() {
+            document.getElementById('terms-modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeTermsModal() {
+            document.getElementById('terms-modal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // モーダル背景クリックで閉じる（共通）
+        window.onclick = function(event) {
+            const pModal = document.getElementById('privacy-modal');
+            const tModal = document.getElementById('terms-modal');
+            if (event.target == pModal) {
+                closePrivacyModal();
+            }
+            if (event.target == tModal) {
+                closeTermsModal();
+            }
+        }
 
 
         // --- 画面遷移関数 ---
