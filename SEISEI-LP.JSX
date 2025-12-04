@@ -53,6 +53,24 @@
         .progress-step {
             transition: all 0.3s ease;
         }
+
+        /* アコーディオン（Q&A用） */
+        .accordion-content {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+        }
+        .accordion-content.active {
+            max-height: 500px; /* 十分な高さを確保 */
+            opacity: 1;
+        }
+        .rotate-icon {
+            transition: transform 0.3s ease;
+        }
+        .rotate-icon.active {
+            transform: rotate(180deg);
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased">
@@ -63,9 +81,12 @@
             <a href="#" class="text-2xl font-bold tracking-tight text-slate-900 group">
                 株式会社 <span class="text-blue-600 group-hover:text-blue-500 transition">SEISEI</span>
             </a>
-            <nav class="hidden md:flex space-x-8 items-center">
-                <a href="#about" class="text-sm font-medium hover:text-blue-600 transition">SEISEIの強み</a>
+            <nav class="hidden md:flex space-x-6 items-center">
+                <a href="#about" class="text-sm font-medium hover:text-blue-600 transition">強み</a>
                 <a href="#diagnosis" class="text-sm font-medium hover:text-blue-600 transition">性格診断</a>
+                <a href="#flow" class="text-sm font-medium hover:text-blue-600 transition">流れ</a>
+                <a href="#voice" class="text-sm font-medium hover:text-blue-600 transition">声</a>
+                <a href="#faq" class="text-sm font-medium hover:text-blue-600 transition">Q&A</a>
                 <a href="#contact" class="bg-blue-600 text-white px-6 py-2.5 rounded-full hover:bg-blue-700 transition shadow-lg shadow-blue-200 text-sm font-bold">
                     無料相談する
                 </a>
@@ -133,6 +154,55 @@
                             無料診断へ進む
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- コンセプト（信頼性） -->
+    <section id="about" class="py-20 bg-white relative">
+        <div class="container mx-auto px-6 max-w-5xl">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold mb-4">なぜ、「性格マッチング」なのか？</h2>
+                <div class="w-16 h-1 bg-blue-600 mx-auto rounded"></div>
+                <p class="text-slate-600 mt-8 leading-loose text-lg">
+                    多くの転職失敗の原因は、「スキルの不一致」ではなく<br class="hidden md:block">
+                    企業文化との「カルチャーアンマッチ」にあります。<br>
+                    SEISEIは、独自のアルゴリズムであなたの性格特性を可視化し、<br class="hidden md:block">
+                    ストレスなく働ける「心理的安全性」の高い職場をご提案します。
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="p-8 bg-slate-50 rounded-2xl border border-slate-100 hover:shadow-lg transition group">
+                    <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mb-6 text-3xl group-hover:scale-110 transition">
+                        <i class="fas fa-fingerprint"></i>
+                    </div>
+                    <h3 class="font-bold text-xl mb-3">あなただけの特性分析</h3>
+                    <p class="text-slate-500 leading-relaxed">
+                        5万人の行動データに基づき、あなたの隠れた強みやモチベーションの源泉を言語化します。
+                    </p>
+                </div>
+                <!-- Card 2 -->
+                <div class="p-8 bg-slate-50 rounded-2xl border border-slate-100 hover:shadow-lg transition group">
+                    <div class="w-16 h-16 bg-teal-100 text-teal-600 rounded-2xl flex items-center justify-center mb-6 text-3xl group-hover:scale-110 transition">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <h3 class="font-bold text-xl mb-3">独自の企業スコアリング</h3>
+                    <p class="text-slate-500 leading-relaxed">
+                        求人票には載らない「実際の社風」「上司のタイプ」などを独自取材でデータ化しています。
+                    </p>
+                </div>
+                <!-- Card 3 -->
+                <div class="p-8 bg-slate-50 rounded-2xl border border-slate-100 hover:shadow-lg transition group">
+                    <div class="w-16 h-16 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mb-6 text-3xl group-hover:scale-110 transition">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h3 class="font-bold text-xl mb-3">伴走型エージェント</h3>
+                    <p class="text-slate-500 leading-relaxed">
+                        診断結果をもとに、無理な提案は一切せず、納得のいくキャリア形成をサポートします。
+                    </p>
                 </div>
             </div>
         </div>
@@ -259,8 +329,192 @@
         </div>
     </section>
 
+    <!-- [新規追加] サービスの流れ -->
+    <section id="flow" class="py-20 bg-white">
+        <div class="container mx-auto px-6 max-w-5xl">
+            <div class="text-center mb-16">
+                <span class="text-blue-600 font-bold tracking-widest uppercase text-xs">FLOW</span>
+                <h2 class="text-3xl font-bold mt-2">ご相談から入社までの流れ</h2>
+                <div class="w-16 h-1 bg-blue-600 mx-auto mt-4 rounded"></div>
+            </div>
+
+            <div class="grid md:grid-cols-4 gap-8 relative">
+                <!-- 連結線（PCのみ） -->
+                <div class="hidden md:block absolute top-12 left-0 w-full h-0.5 bg-slate-100 -z-10"></div>
+
+                <!-- Step 1 -->
+                <div class="relative text-center bg-white">
+                    <div class="w-24 h-24 mx-auto bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-3xl mb-6 shadow-sm border-4 border-white">
+                        <i class="fas fa-desktop"></i>
+                    </div>
+                    <div class="inline-block bg-blue-600 text-white text-xs px-2 py-1 rounded mb-2">STEP 1</div>
+                    <h3 class="font-bold text-lg mb-2">性格診断＆予約</h3>
+                    <p class="text-sm text-slate-500">
+                        まずはこのページの診断を完了し、無料相談を予約します。1分で完了します。
+                    </p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="relative text-center bg-white">
+                    <div class="w-24 h-24 mx-auto bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-3xl mb-6 shadow-sm border-4 border-white">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="inline-block bg-blue-600 text-white text-xs px-2 py-1 rounded mb-2">STEP 2</div>
+                    <h3 class="font-bold text-lg mb-2">キャリア相談</h3>
+                    <p class="text-sm text-slate-500">
+                        専任エージェントが診断結果を元にヒアリング。あなたの強みを言語化します。
+                    </p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="relative text-center bg-white">
+                    <div class="w-24 h-24 mx-auto bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-3xl mb-6 shadow-sm border-4 border-white">
+                        <i class="fas fa-file-contract"></i>
+                    </div>
+                    <div class="inline-block bg-blue-600 text-white text-xs px-2 py-1 rounded mb-2">STEP 3</div>
+                    <h3 class="font-bold text-lg mb-2">求人紹介・面接</h3>
+                    <p class="text-sm text-slate-500">
+                        「性格が合う」企業だけを厳選してご紹介。面接対策も徹底サポートします。
+                    </p>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="relative text-center bg-white">
+                    <div class="w-24 h-24 mx-auto bg-orange-50 text-orange-500 rounded-full flex items-center justify-center text-3xl mb-6 shadow-sm border-4 border-white">
+                        <i class="fas fa-door-open"></i>
+                    </div>
+                    <div class="inline-block bg-orange-500 text-white text-xs px-2 py-1 rounded mb-2">GOAL</div>
+                    <h3 class="font-bold text-lg mb-2">内定・入社</h3>
+                    <p class="text-sm text-slate-500">
+                        条件交渉もお任せください。入社後も定着するまでフォローいたします。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- [新規追加] 利用者の声 -->
+    <section id="voice" class="py-20 bg-slate-50">
+        <div class="container mx-auto px-6 max-w-5xl">
+            <div class="text-center mb-16">
+                <span class="text-blue-600 font-bold tracking-widest uppercase text-xs">VOICE</span>
+                <h2 class="text-3xl font-bold mt-2">転職成功者の声</h2>
+                <p class="text-slate-500 mt-4">性格マッチングで、理想の職場を見つけた方々です。</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Voice 1 -->
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row gap-6">
+                    <div class="flex-shrink-0 text-center md:text-left">
+                        <img src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80" alt="User" class="w-20 h-20 rounded-full object-cover mx-auto md:mx-0 border-2 border-blue-100">
+                        <div class="mt-2">
+                            <p class="font-bold text-sm">Y.Sさん</p>
+                            <p class="text-xs text-slate-500">28歳 / 営業職</p>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="mb-2">
+                            <span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold">年収120万UP</span>
+                            <span class="bg-green-100 text-green-700 text-xs px-2 py-1 rounded font-bold ml-1">残業減</span>
+                        </div>
+                        <h4 class="font-bold text-lg mb-2">「根性論」の職場から、理論的な環境へ。</h4>
+                        <p class="text-sm text-slate-600 leading-relaxed">
+                            以前は「気合で売れ」という社風で疲弊していましたが、診断で「論理的思考タイプ」と判明。データを重視するIT企業の営業職を紹介してもらい、水を得た魚のように成果が出せるようになりました。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Voice 2 -->
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row gap-6">
+                    <div class="flex-shrink-0 text-center md:text-left">
+                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80" alt="User" class="w-20 h-20 rounded-full object-cover mx-auto md:mx-0 border-2 border-blue-100">
+                        <div class="mt-2">
+                            <p class="font-bold text-sm">M.Kさん</p>
+                            <p class="text-xs text-slate-500">32歳 / 事務職</p>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="mb-2">
+                            <span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold">リモート可</span>
+                            <span class="bg-green-100 text-green-700 text-xs px-2 py-1 rounded font-bold ml-1">キャリアUP</span>
+                        </div>
+                        <h4 class="font-bold text-lg mb-2">自分の「強み」が初めてわかりました。</h4>
+                        <p class="text-sm text-slate-600 leading-relaxed">
+                            事務職はどこも同じだと思っていましたが、SEISEIさんに「サポート力」を高く評価してくれるベンチャー企業を紹介されました。今は社長秘書として、裁量を持って働けています。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- [新規追加] よくある質問 (Q&A) -->
+    <section id="faq" class="py-20 bg-white">
+        <div class="container mx-auto px-6 max-w-3xl">
+            <div class="text-center mb-16">
+                <span class="text-blue-600 font-bold tracking-widest uppercase text-xs">Q&A</span>
+                <h2 class="text-3xl font-bold mt-2">よくある質問</h2>
+                <p class="text-slate-500 mt-4">サービスの利用に関して、多く寄せられる質問です。</p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Q1 -->
+                <div class="border border-slate-200 rounded-xl overflow-hidden">
+                    <button class="w-full text-left p-6 bg-slate-50 hover:bg-slate-100 transition flex justify-between items-center" onclick="toggleAccordion(this)">
+                        <span class="font-bold text-slate-800">Q. サービスの利用に費用はかかりますか？</span>
+                        <i class="fas fa-chevron-down text-slate-400 rotate-icon"></i>
+                    </button>
+                    <div class="accordion-content bg-white">
+                        <div class="p-6 text-slate-600 text-sm leading-relaxed border-t border-slate-100">
+                            <span class="font-bold text-blue-600">A.</span> いいえ、求職者の方は<span class="font-bold">完全に無料</span>でご利用いただけます。紹介先の企業様より採用手数料をいただいて運営しているため、相談から入社まで一切費用は発生しません。
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q2 -->
+                <div class="border border-slate-200 rounded-xl overflow-hidden">
+                    <button class="w-full text-left p-6 bg-slate-50 hover:bg-slate-100 transition flex justify-between items-center" onclick="toggleAccordion(this)">
+                        <span class="font-bold text-slate-800">Q. 今すぐ転職するつもりはないのですが、相談できますか？</span>
+                        <i class="fas fa-chevron-down text-slate-400 rotate-icon"></i>
+                    </button>
+                    <div class="accordion-content bg-white">
+                        <div class="p-6 text-slate-600 text-sm leading-relaxed border-t border-slate-100">
+                            <span class="font-bold text-blue-600">A.</span> はい、もちろんです。「自分の市場価値を知りたい」「将来のキャリアプランを考えたい」といったご相談も大歓迎です。無理に転職を勧めることはありませんのでご安心ください。
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q3 -->
+                <div class="border border-slate-200 rounded-xl overflow-hidden">
+                    <button class="w-full text-left p-6 bg-slate-50 hover:bg-slate-100 transition flex justify-between items-center" onclick="toggleAccordion(this)">
+                        <span class="font-bold text-slate-800">Q. 相談時の服装や持ち物は？</span>
+                        <i class="fas fa-chevron-down text-slate-400 rotate-icon"></i>
+                    </button>
+                    <div class="accordion-content bg-white">
+                        <div class="p-6 text-slate-600 text-sm leading-relaxed border-t border-slate-100">
+                            <span class="font-bold text-blue-600">A.</span> 服装は私服で構いません。リラックスしてお話しいただきたいため、スーツである必要はありません。持ち物も特に不要ですが、もし職務経歴書や履歴書の下書きがあれば、より具体的なアドバイスが可能です。
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q4 -->
+                <div class="border border-slate-200 rounded-xl overflow-hidden">
+                    <button class="w-full text-left p-6 bg-slate-50 hover:bg-slate-100 transition flex justify-between items-center" onclick="toggleAccordion(this)">
+                        <span class="font-bold text-slate-800">Q. 在職中で忙しいのですが、土日や夜間の相談は可能ですか？</span>
+                        <i class="fas fa-chevron-down text-slate-400 rotate-icon"></i>
+                    </button>
+                    <div class="accordion-content bg-white">
+                        <div class="p-6 text-slate-600 text-sm leading-relaxed border-t border-slate-100">
+                            <span class="font-bold text-blue-600">A.</span> はい、可能です。平日の夜間（20時開始など）や、土日の面談も承っております。現在はオンライン（Zoom等）での面談が主流ですので、ご自宅からお気軽にご相談ください。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- コンタクトフォーム -->
-    <section id="contact" class="py-24 bg-white">
+    <section id="contact" class="py-24 bg-blue-50">
         <div class="container mx-auto px-6 max-w-2xl">
             <div class="text-center mb-12">
                 <span class="text-blue-600 font-bold tracking-widest uppercase text-xs">CONTACT</span>
@@ -350,6 +604,15 @@
         // 状態管理変数
         let currentStep = 0;
         let totalScore = 0; // はい=2, どちらでもない=1, いいえ=0
+
+        // --- アコーディオン機能（Q&A用） ---
+        function toggleAccordion(element) {
+            const content = element.nextElementSibling;
+            const icon = element.querySelector('.rotate-icon');
+            
+            content.classList.toggle('active');
+            icon.classList.toggle('active');
+        }
 
         // --- 画面遷移関数 ---
         function switchScreen(hideId, showId) {
