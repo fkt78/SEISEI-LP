@@ -8,6 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Chart.js (グラフ描画用) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Google Fonts -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap');
@@ -81,6 +83,12 @@
         .modal.active {
             opacity: 1;
             visibility: visible;
+        }
+
+        /* 診断結果シート用スタイル */
+        .report-sheet {
+            background-image: radial-gradient(#f1f5f9 1px, transparent 1px);
+            background-size: 20px 20px;
         }
     </style>
 </head>
@@ -224,7 +232,7 @@
 
     <!-- 診断アプリセクション (メインコンテンツ) -->
     <section id="diagnosis" class="py-24 bg-gradient-to-b from-slate-50 to-blue-50 scroll-mt-20">
-        <div class="container mx-auto px-4 max-w-3xl">
+        <div class="container mx-auto px-4 max-w-4xl">
             <div class="text-center mb-10">
                 <span class="text-blue-600 font-bold tracking-widest uppercase text-xs">DIAGNOSIS</span>
                 <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-4">適職タイプ診断</h2>
@@ -297,45 +305,108 @@
                         <div class="h-full bg-blue-600 animate-[loading_1.5s_ease-in-out_infinite] w-1/2"></div>
                     </div>
                     <h3 class="text-xl font-bold text-slate-800 mb-2">診断結果を作成中...</h3>
-                    <p class="text-sm text-slate-500">あなたの回答パターンを分析しています</p>
+                    <p class="text-sm text-slate-500">あなたの回答パターンを8つの指標で分析しています</p>
                 </div>
 
-                <!-- 4. 結果画面 -->
+                <!-- 4. 結果画面（診断シート） -->
                 <div id="diag-result" class="absolute inset-0 flex flex-col hidden bg-slate-50 z-10 overflow-hidden">
-                    <div class="flex-1 overflow-y-auto custom-scrollbar p-6 md:p-10">
-                        <div class="w-full max-w-lg mx-auto bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-100">
-                            <div class="text-center mb-6">
-                                <span class="inline-block px-3 py-1 bg-blue-600 text-white text-xs font-bold rounded-full mb-3">診断完了</span>
-                                <p class="text-sm text-slate-500 font-bold mb-1">あなたに最適なタイプは...</p>
-                                <h3 id="result-title" class="text-2xl md:text-3xl font-extrabold text-blue-700 mb-2">
-                                    <!-- JSで挿入 -->
-                                </h3>
-                                <div class="w-full h-px bg-slate-100 my-4"></div>
+                    <div class="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-8 report-sheet">
+                        
+                        <!-- 診断書本体 -->
+                        <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden mb-8">
+                            
+                            <!-- ヘッダー -->
+                            <div class="bg-blue-600 text-white p-4 flex justify-between items-center">
+                                <h3 class="font-bold text-lg"><i class="fas fa-file-contract mr-2"></i>キャリアコンパス診断シート</h3>
+                                <p class="text-xs bg-blue-500 px-3 py-1 rounded-full" id="result-date">2025.12.06</p>
                             </div>
 
-                            <div class="bg-blue-50 p-5 rounded-xl mb-6 text-left border border-blue-100">
-                                <h4 class="font-bold text-blue-900 mb-2 text-sm">
-                                    <i class="fas fa-search-plus mr-1"></i> タイプ分析結果
-                                </h4>
-                                <p id="result-desc" class="text-slate-700 text-sm leading-relaxed mb-4">
-                                    <!-- JSで挿入 -->
-                                </p>
-                            </div>
+                            <div class="p-6 md:p-8">
+                                <!-- タイプ名とキャラ -->
+                                <div class="text-center mb-8">
+                                    <div class="w-20 h-20 mx-auto bg-orange-100 text-orange-500 rounded-full flex items-center justify-center text-4xl mb-4 border-4 border-white shadow-md">
+                                        <i class="fas fa-user-astronaut" id="type-icon"></i>
+                                    </div>
+                                    <p class="text-sm text-slate-500 font-bold mb-1">あなたのタイプ</p>
+                                    <h2 class="text-3xl font-extrabold text-slate-800 mb-2" id="type-name">創造プランナー型</h2>
+                                    <p class="text-blue-600 font-bold" id="type-catch">新しい価値を形にするアイデア人</p>
+                                </div>
 
-                            <div class="text-center space-y-4">
-                                <p class="text-xs text-slate-500 font-bold">
-                                    ▼ この結果について詳しく相談する ▼
-                                </p>
-                                <button onclick="scrollToContact()" class="w-full bg-orange-500 text-white px-6 py-4 rounded-xl font-bold hover:bg-orange-600 transition shadow-lg shadow-orange-100 animate-pulse text-lg">
-                                    無料相談で求人リストを受け取る
-                                </button>
-                                <div class="pt-2">
-                                    <button onclick="resetDiagnosis()" class="text-xs text-slate-400 hover:text-blue-600 underline">
-                                        <i class="fas fa-redo mr-1"></i>診断をやり直す
-                                    </button>
+                                <!-- レーダーチャート -->
+                                <div class="mb-8 relative h-64 w-full">
+                                    <canvas id="radarChart"></canvas>
+                                </div>
+
+                                <!-- 詳細情報グリッド -->
+                                <div class="grid md:grid-cols-2 gap-6 mb-8">
+                                    <!-- 強み -->
+                                    <div class="bg-blue-50 p-5 rounded-xl border border-blue-100">
+                                        <h4 class="font-bold text-blue-800 mb-2 flex items-center">
+                                            <span class="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs mr-2"><i class="fas fa-thumbs-up"></i></span>
+                                            強みと活かし方
+                                        </h4>
+                                        <p class="text-sm text-slate-700 leading-relaxed" id="text-strength">
+                                            発想力と直感力に優れ、独創的な価値を生み出すクリエイタータイプです。自由な発想で企画を形にし、チームに刺激をもたらします。
+                                        </p>
+                                    </div>
+                                    <!-- 向いているポイント -->
+                                    <div class="bg-green-50 p-5 rounded-xl border border-green-100">
+                                        <h4 class="font-bold text-green-800 mb-2 flex items-center">
+                                            <span class="w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-xs mr-2"><i class="fas fa-check"></i></span>
+                                            向いている環境
+                                        </h4>
+                                        <p class="text-sm text-slate-700 leading-relaxed" id="text-environment">
+                                            自由な発想や新しい企画が求められる環境で活躍します。変化や創造性を歓迎する場や、裁量の大きい職場に向いています。
+                                        </p>
+                                    </div>
+                                    <!-- 注意点 -->
+                                    <div class="bg-yellow-50 p-5 rounded-xl border border-yellow-100">
+                                        <h4 class="font-bold text-yellow-800 mb-2 flex items-center">
+                                            <span class="w-6 h-6 bg-yellow-600 text-white rounded-full flex items-center justify-center text-xs mr-2"><i class="fas fa-exclamation"></i></span>
+                                            注意したいポイント
+                                        </h4>
+                                        <p class="text-sm text-slate-700 leading-relaxed" id="text-caution">
+                                            飽きやすく細部の詰めが甘くなる傾向があります。スケジュール管理ツールを活用したり、実務支援を得ることで安定します。
+                                        </p>
+                                    </div>
+                                    <!-- 適職 -->
+                                    <div class="bg-purple-50 p-5 rounded-xl border border-purple-100">
+                                        <h4 class="font-bold text-purple-800 mb-2 flex items-center">
+                                            <span class="w-6 h-6 bg-purple-600 text-white rounded-full flex items-center justify-center text-xs mr-2"><i class="fas fa-briefcase"></i></span>
+                                            適正職種
+                                        </h4>
+                                        <p class="text-sm text-slate-700 leading-relaxed" id="text-jobs">
+                                            企画職、マーケター、デザイナー、コンサルタント、新規事業開発、広報・PRなど
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <!-- SEISEIくんのコメント -->
+                                <div class="bg-slate-800 text-white p-5 rounded-xl relative mt-4">
+                                    <div class="absolute -top-3 -left-3 w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center border-2 border-white">
+                                        <i class="fas fa-comment-dots"></i>
+                                    </div>
+                                    <h4 class="font-bold text-orange-400 mb-2 ml-4 text-sm">SEISEIからのコメント</h4>
+                                    <p class="text-sm leading-relaxed opacity-90" id="text-comment">
+                                        このタイプは転職市場で非常に重宝されます。「自分で考えて動ける」人材はどの企業も喉から手が出るほど欲しいからです。この診断結果を武器に、より裁量の大きいポジションを狙っていきましょう！
+                                    </p>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- アクションエリア -->
+                        <div class="text-center max-w-xl mx-auto space-y-4 mb-10">
+                            <p class="font-bold text-slate-700">
+                                <span class="bg-yellow-200 px-2">あなたにマッチする求人が見つかりました</span>
+                            </p>
+                            <button onclick="scrollToContact()" class="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-5 rounded-2xl font-bold hover:from-orange-600 hover:to-red-600 transition shadow-xl shadow-orange-200 animate-bounce text-xl transform hover:-translate-y-1">
+                                無料相談で「求人リスト」を受け取る <i class="fas fa-chevron-right ml-2"></i>
+                            </button>
+                            <button onclick="resetDiagnosis()" class="text-sm text-slate-400 hover:text-blue-600 underline">
+                                <i class="fas fa-redo mr-1"></i>診断をやり直す
+                            </button>
+                        </div>
+
                     </div>
                 </div>
 
@@ -789,6 +860,7 @@
         // 状態管理変数
         let currentStep = 0;
         let totalScore = 0; // はい=2, どちらでもない=1, いいえ=0 (Max 64)
+        let chartInstance = null; // チャートインスタンス保持用
 
         // --- アコーディオン機能（Q&A用） ---
         function toggleAccordion(element) {
@@ -799,40 +871,15 @@
             icon.classList.toggle('active');
         }
 
-        // --- モーダル機能（プライバシーポリシー＆利用規約） ---
-        
-        // プライバシーポリシー
-        function openPrivacyModal() {
-            document.getElementById('privacy-modal').classList.add('active');
-            document.body.style.overflow = 'hidden'; // 背景スクロール固定
-        }
-        function closePrivacyModal() {
-            document.getElementById('privacy-modal').classList.remove('active');
-            document.body.style.overflow = ''; // スクロール解除
-        }
-        
-        // 利用規約
-        function openTermsModal() {
-            document.getElementById('terms-modal').classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-        function closeTermsModal() {
-            document.getElementById('terms-modal').classList.remove('active');
-            document.body.style.overflow = '';
-        }
-
-        // モーダル背景クリックで閉じる（共通）
+        // --- モーダル機能 ---
+        function openPrivacyModal() { document.getElementById('privacy-modal').classList.add('active'); document.body.style.overflow = 'hidden'; }
+        function closePrivacyModal() { document.getElementById('privacy-modal').classList.remove('active'); document.body.style.overflow = ''; }
+        function openTermsModal() { document.getElementById('terms-modal').classList.add('active'); document.body.style.overflow = 'hidden'; }
+        function closeTermsModal() { document.getElementById('terms-modal').classList.remove('active'); document.body.style.overflow = ''; }
         window.onclick = function(event) {
-            const pModal = document.getElementById('privacy-modal');
-            const tModal = document.getElementById('terms-modal');
-            if (event.target == pModal) {
-                closePrivacyModal();
-            }
-            if (event.target == tModal) {
-                closeTermsModal();
-            }
+            if (event.target == document.getElementById('privacy-modal')) closePrivacyModal();
+            if (event.target == document.getElementById('terms-modal')) closeTermsModal();
         }
-
 
         // --- 画面遷移関数 ---
         function switchScreen(hideId, showId) {
@@ -851,15 +898,12 @@
 
         // --- 質問描画ロジック ---
         function renderQuestion() {
-            // プログレスバー更新
             const progress = ((currentStep + 1) / questions.length) * 100;
             document.getElementById('q-number').innerText = currentStep + 1;
             document.getElementById('q-total').innerText = questions.length;
             document.getElementById('progress-bar').style.width = `${progress}%`;
             
-            // 質問文更新
             const qContainer = document.getElementById('question-container');
-            // フェード効果のために一度クラスを外す
             qContainer.classList.remove('fade-in');
             void qContainer.offsetWidth; // リフロー
             qContainer.classList.add('fade-in');
@@ -869,7 +913,6 @@
 
         function selectOption(score) {
             totalScore += score;
-            
             if (currentStep < questions.length - 1) {
                 currentStep++;
                 renderQuestion();
@@ -882,7 +925,7 @@
         function finishDiagnosis() {
             switchScreen('diag-question', 'diag-loading');
             
-            // ローディング演出
+            // ローディング演出 (1.5秒)
             setTimeout(() => {
                 switchScreen('diag-loading', 'diag-result');
                 showResultDetails();
@@ -890,25 +933,133 @@
         }
 
         function showResultDetails() {
-            const titleEl = document.getElementById('result-title');
-            const descEl = document.getElementById('result-desc');
+            // 今日の日付を表示
+            const today = new Date();
+            document.getElementById('result-date').innerText = today.toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' });
+
+            const typeName = document.getElementById('type-name');
+            const typeCatch = document.getElementById('type-catch');
+            const typeIcon = document.getElementById('type-icon');
             
-            // ロジック：合計スコア(Max 64)に基づいて判定
-            // 質問内容は全体的に「自由・在宅・自律」寄りなので、スコアが高いほどフリーランス向き
+            const textStrength = document.getElementById('text-strength');
+            const textEnvironment = document.getElementById('text-environment');
+            const textCaution = document.getElementById('text-caution');
+            const textJobs = document.getElementById('text-jobs');
+            const textComment = document.getElementById('text-comment');
+
+            // 仮ロジック: スコアに応じて3タイプに分類し、
+            // さらにレーダーチャート用のダミーデータ（8項目）を生成する
+            let chartData = [];
             
             if (totalScore >= 48) {
-                // High Score (75%以上): 超自由重視
-                titleEl.innerText = "【自由奔放】ノマドワーカータイプ";
-                descEl.innerText = "あなたは場所や時間に縛られない働き方を強く求めています。高い自律性を持ち、自分のペースで仕事を進める環境で最大のパフォーマンスを発揮します。完全リモートやフルフレックス、成果報酬型の企業が適しています。";
+                // High Score: 自由奔放・ノマドタイプ
+                typeName.innerText = "創造プランナー型";
+                typeCatch.innerText = "新しい価値を形にするアイデア人";
+                typeIcon.className = "fas fa-lightbulb";
+                
+                textStrength.innerText = "発想力と直感力に優れ、独創的な価値を生み出すクリエイタータイプです。自由な発想で企画や構想を形にし、チームに刺激と変化をもたらします。";
+                textEnvironment.innerText = "自由な発想や新しい企画が求められる環境で活躍します。変化や創造性を歓迎する場や、裁量の大きい職場に向いています。";
+                textCaution.innerText = "飽きやすく細部の詰めが甘くなる傾向。スケジュール管理や実務支援を得ると安定して成果を出せます。";
+                textJobs.innerText = "デザイナー / プランナー / マーケター / プロダクト開発者 / 新規事業開発 / 起業家";
+                textComment.innerText = "このタイプは『0から1を生み出す力』がずば抜けています。ルーチンワークよりも、答えのない課題に取り組む仕事でこそ、あなたの真価が発揮されますよ！";
+
+                // チャートデータ（企画構想力などが高い）
+                chartData = [5, 3, 4, 4, 4, 3, 5, 2]; // 企画, 自己管理, 論理, 問題解決, 実行, コミュ, 適応, 共感 (仮の並び)
+
             } else if (totalScore >= 24) {
-                // Mid Score (37.5%以上): バランス重視
-                titleEl.innerText = "【堅実派】ハイブリッドワーカータイプ";
-                descEl.innerText = "あなたは自由と安定のバランスを大切にするタイプです。適度な自由は欲しいけれど、チームとの繋がりや組織の安定感も捨てがたいと考えています。週2~3日のリモートワークや、副業OKな柔軟な企業がおすすめです。";
+                // Mid Score: バランス・ハイブリッドタイプ
+                typeName.innerText = "挑戦リーダー型";
+                typeCatch.innerText = "周囲を巻き込みゴールへ導く牽引者";
+                typeIcon.className = "fas fa-flag-checkered";
+
+                textStrength.innerText = "責任感が強く、困難な状況でも前向きに挑戦できるリーダータイプです。高い目標に向かい、周囲を鼓舞しながら推進します。";
+                textEnvironment.innerText = "目標達成を重視する環境やチャレンジの多い場で適性があります。成果が正当に評価される環境でモチベーションが高まります。";
+                textCaution.innerText = "結果を急ぎすぎると視野が狭くなり、周囲に強く当たることも。メンバーのペースを尊重し、余裕を持った計画を意識しましょう。";
+                textJobs.innerText = "営業マネージャー / プロジェクトリーダー / 店舗責任者 / カスタマーサクセス / コンサルタント";
+                textComment.innerText = "企業が今一番欲しがっている『自走できるリーダー』です。プレイングマネージャーとして、現場と経営の橋渡しができる貴重な存在になれます。";
+
+                // チャートデータ（実行力、問題解決などが高い）
+                chartData = [4, 4, 3, 5, 5, 4, 3, 3];
+
             } else {
-                // Low Score: 安定/オフィス重視
-                titleEl.innerText = "【組織重視】オフィススペシャリストタイプ";
-                descEl.innerText = "あなたは整った環境で、チームと密に連携しながら働くことに喜びを感じます。オンオフの切り替えを明確にし、オフィスという「場」で集中して成果を出すことが得意です。安定した基盤のある企業や、チームワーク重視の職場が適しています。";
+                // Low Score: 組織・スペシャリストタイプ
+                typeName.innerText = "堅実サポーター型";
+                typeCatch.innerText = "組織の安定と調和を守る守護神";
+                typeIcon.className = "fas fa-shield-alt";
+
+                textStrength.innerText = "高い実務能力と協調性を持ち、チームの基盤を支えるサポータータイプです。細やかな気配りと正確な業務遂行で信頼を集めます。";
+                textEnvironment.innerText = "役割分担が明確で、安定した環境で力を発揮します。チームワークを重視する組織や、長期的な関係構築が求められる場に向いています。";
+                textCaution.innerText = "変化に対して慎重になりすぎる傾向があります。時にはリスクを恐れず、新しい方法を取り入れる柔軟性も意識してみましょう。";
+                textJobs.innerText = "事務職 / バックオフィス / 公務員 / エンジニア(保守運用) / 秘書 / 経理";
+                textComment.innerText = "どんな組織にも欠かせない『縁の下の力持ち』です。あなたの安定感は、変化の激しい時代だからこそ、周囲に大きな安心感を与えています。";
+
+                // チャートデータ（自己管理、共感、適応などが高い）
+                chartData = [2, 5, 3, 3, 3, 4, 4, 5];
             }
+
+            // チャート描画
+            drawRadarChart(chartData);
+        }
+
+        function drawRadarChart(dataValues) {
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            
+            // 既存のチャートがあれば破棄
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            chartInstance = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['企画構想力', '自己管理力', '論理分析力', '問題解決力', '実行推進力', 'コミュ力', '適応力', '共感力'],
+                    datasets: [{
+                        label: 'あなたの能力値',
+                        data: dataValues,
+                        backgroundColor: 'rgba(59, 130, 246, 0.2)', // Blue-500 light
+                        borderColor: 'rgba(59, 130, 246, 1)', // Blue-500
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(59, 130, 246, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(59, 130, 246, 1)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: {
+                                display: true,
+                                color: '#e2e8f0' // slate-200
+                            },
+                            grid: {
+                                color: '#e2e8f0'
+                            },
+                            pointLabels: {
+                                font: {
+                                    size: 11,
+                                    weight: 'bold',
+                                    family: "'Noto Sans JP', sans-serif"
+                                },
+                                color: '#475569' // slate-600
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 5,
+                            ticks: {
+                                display: false, // 目盛り数字は隠す
+                                stepSize: 1
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
         }
 
         // --- フォーム連携 ---
@@ -921,7 +1072,7 @@
             const target = document.getElementById('contact');
             if(target) target.scrollIntoView({ behavior: 'smooth' });
             
-            const resultTitle = document.getElementById('result-title').innerText;
+            const resultTitle = document.getElementById('type-name').innerText;
             const messageBox = document.getElementById('contact-message');
 
             setTimeout(() => {
@@ -934,7 +1085,6 @@
         function resetDiagnosis() {
             currentStep = 0;
             totalScore = 0;
-            
             document.getElementById('diag-result').classList.add('hidden');
             document.getElementById('diag-start').classList.remove('hidden');
             document.getElementById('diag-start').classList.add('fade-in');
@@ -951,7 +1101,6 @@
                 e.preventDefault();
                 const targetId = this.getAttribute('href');
                 if (targetId === '#') return;
-                
                 const targetElement = document.querySelector(targetId);
                 if (targetElement) {
                     targetElement.scrollIntoView({ behavior: 'smooth' });
