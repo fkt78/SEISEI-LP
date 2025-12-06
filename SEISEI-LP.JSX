@@ -127,7 +127,7 @@
                 <p class="text-lg text-slate-600 leading-relaxed max-w-lg mx-auto lg:mx-0">
                     「今の職場、なんとなく合わない...」<br>
                     その違和感の正体は、あなたの性格と社風のミスマッチかもしれません。<br>
-                    16の質問から、あなたの本当のワークスタイルを見つけましょう。
+                    32の質問から、あなたの本当のワークスタイルを見つけましょう。
                 </p>
                 
                 <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
@@ -228,7 +228,7 @@
             <div class="text-center mb-10">
                 <span class="text-blue-600 font-bold tracking-widest uppercase text-xs">DIAGNOSIS</span>
                 <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-4">適職タイプ診断</h2>
-                <p class="text-slate-500">あなたの価値観を深掘りする16の質問。</p>
+                <p class="text-slate-500">あなたの価値観を深掘りする32の質問。</p>
             </div>
 
             <!-- 診断カードコンテナ -->
@@ -244,7 +244,7 @@
                     </div>
                     <h3 class="text-2xl font-bold mb-4">あなたの「ワークスタイル」を分析</h3>
                     <p class="text-slate-500 mb-8 leading-relaxed max-w-md mx-auto">
-                        全16問の質問に答えるだけで、<br>
+                        全32問の質問に答えるだけで、<br>
                         あなたに本当に合った働き方や企業タイプを診断します。<br>
                         <span class="text-sm text-blue-600 font-bold mt-2 block">直感でお答えください。</span>
                     </p>
@@ -252,7 +252,7 @@
                         診断スタート
                     </button>
                     <div class="mt-6 flex items-center justify-center gap-4 text-xs text-slate-400">
-                        <span><i class="fas fa-clock mr-1"></i>所要時間 約2分</span>
+                        <span><i class="fas fa-clock mr-1"></i>所要時間 約3分</span>
                         <span><i class="fas fa-user-shield mr-1"></i>匿名回答OK</span>
                     </div>
                 </div>
@@ -262,7 +262,7 @@
                     <!-- ヘッダー部分 -->
                     <div class="px-6 pt-6 pb-2 border-b border-slate-50">
                         <div class="flex justify-between items-center mb-4">
-                            <span class="text-xs font-bold text-slate-400 tracking-wider">Q<span id="q-number" class="text-blue-600 text-lg ml-1">1</span> / <span id="q-total">16</span></span>
+                            <span class="text-xs font-bold text-slate-400 tracking-wider">Q<span id="q-number" class="text-blue-600 text-lg ml-1">1</span> / <span id="q-total">32</span></span>
                             <div class="h-2 w-32 bg-slate-100 rounded-full overflow-hidden">
                                 <div id="progress-bar" class="h-full bg-blue-600 w-0 transition-all duration-300 ease-out"></div>
                             </div>
@@ -743,8 +743,8 @@
     <!-- JavaScript Logic -->
     <script>
         // --- 設定データ ---
-        // 指定URLから抽出した全16問
-        const questions = [
+        // ユーザー提供の16問
+        const baseQuestions = [
             "ひとりで仕事をする方が好き",
             "出社するよりも在宅で働きたい",
             "好きなことを仕事にしたい",
@@ -763,9 +763,32 @@
             "休日はアウトドアを楽しみたい"
         ];
 
+        // ジェミニ生成の16問（後半用）
+        const addedQuestions = [
+            "チームチャットよりも個別の作業に集中したい",
+            "満員電車に乗る生活は絶対に避けたい",
+            "自分のスキルだけで生きていきたい",
+            "週末のために働くのではなく、毎日を楽しみたい",
+            "ルールに縛られるよりも、自分でルールを作りたい",
+            "固定給よりも成果報酬の方がやる気が出る",
+            "タスク管理はアプリなどで自律的に行える",
+            "仕事とプライベートの境界線はあいまいでいい",
+            "お気に入りのコワーキングスペースを見つけたい",
+            "周りの目を気にせず働ける環境がいい",
+            "家族との時間を最優先にした働き方をしたい",
+            "働く時間は自分で自由に決めたい",
+            "世界中どこにいても仕事ができる人になりたい",
+            "ノートパソコン1台で完結する仕事がしたい",
+            "海や山の近くに移住して働きたい",
+            "キャンプ場やリゾート地でワーケーションしたい"
+        ];
+
+        // 結合して32問にする
+        const questions = [...baseQuestions, ...addedQuestions];
+
         // 状態管理変数
         let currentStep = 0;
-        let totalScore = 0; // はい=2, どちらでもない=1, いいえ=0
+        let totalScore = 0; // はい=2, どちらでもない=1, いいえ=0 (Max 64)
 
         // --- アコーディオン機能（Q&A用） ---
         function toggleAccordion(element) {
@@ -870,15 +893,15 @@
             const titleEl = document.getElementById('result-title');
             const descEl = document.getElementById('result-desc');
             
-            // 仮ロジック：合計スコア(Max 32)に基づいて判定
-            // 質問内容が「自由・在宅・マイペース」寄りなので、スコアが高いほどフリーランス向き
+            // ロジック：合計スコア(Max 64)に基づいて判定
+            // 質問内容は全体的に「自由・在宅・自律」寄りなので、スコアが高いほどフリーランス向き
             
-            if (totalScore >= 24) {
-                // High Score: 自由重視
+            if (totalScore >= 48) {
+                // High Score (75%以上): 超自由重視
                 titleEl.innerText = "【自由奔放】ノマドワーカータイプ";
                 descEl.innerText = "あなたは場所や時間に縛られない働き方を強く求めています。高い自律性を持ち、自分のペースで仕事を進める環境で最大のパフォーマンスを発揮します。完全リモートやフルフレックス、成果報酬型の企業が適しています。";
-            } else if (totalScore >= 12) {
-                // Mid Score: バランス重視
+            } else if (totalScore >= 24) {
+                // Mid Score (37.5%以上): バランス重視
                 titleEl.innerText = "【堅実派】ハイブリッドワーカータイプ";
                 descEl.innerText = "あなたは自由と安定のバランスを大切にするタイプです。適度な自由は欲しいけれど、チームとの繋がりや組織の安定感も捨てがたいと考えています。週2~3日のリモートワークや、副業OKな柔軟な企業がおすすめです。";
             } else {
@@ -902,7 +925,7 @@
             const messageBox = document.getElementById('contact-message');
 
             setTimeout(() => {
-                messageBox.value = `【診断結果: ${resultTitle}】\n（スコア: ${totalScore}/${questions.length * 2}）\n\n診断結果を見ました。この結果に基づいた求人や働き方について相談したいです。`;
+                messageBox.value = `【診断結果: ${resultTitle}】\n（スコア: ${totalScore}/${questions.length * 2}）\n※このスコアは特性の傾向を表すもので、優劣や良し悪しを判定するものではありません。\n\n診断結果を見ました。この結果に基づいた求人や働き方について相談したいです。`;
                 messageBox.focus();
                 messageBox.classList.add('ring-2', 'ring-blue-200', 'border-blue-500');
             }, 800);
