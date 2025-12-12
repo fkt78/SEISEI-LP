@@ -100,6 +100,7 @@
             <a href="#" class="text-2xl font-bold tracking-tight text-slate-900 group">
                 株式会社 <span class="text-blue-600 group-hover:text-blue-500 transition">SEISEI</span>
             </a>
+            <!-- PC用ナビゲーション -->
             <nav class="hidden lg:flex space-x-5 items-center">
                 <a href="#about" class="text-sm font-medium hover:text-blue-600 transition">当社の強み</a>
                 <a href="#diagnosis" class="text-sm font-medium hover:text-blue-600 transition">性格診断</a>
@@ -111,6 +112,7 @@
                     無料相談する
                 </a>
             </nav>
+            <!-- モバイル用ハンバーガーメニュー（簡易実装） -->
             <button class="lg:hidden text-slate-600">
                 <i class="fas fa-bars text-xl"></i>
             </button>
@@ -135,6 +137,7 @@
                     その違和感の正体は、あなたの性格と社風のミスマッチかもしれません。<br>
                     32の質問から、あなたの本当のワークスタイルを見つけましょう。
                 </p>
+                
                 <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                     <button onclick="scrollToDiagnosis()" class="pulse-ring bg-blue-600 text-white px-8 py-4 rounded-full text-lg font-bold hover:bg-blue-700 transition shadow-xl shadow-blue-200 flex items-center justify-center gap-3">
                         <i class="fas fa-clipboard-list"></i> 
@@ -145,6 +148,7 @@
                     </a>
                 </div>
             </div>
+            
             <!-- スマホ画面風イメージ -->
             <div class="hidden lg:block relative pl-10">
                 <div class="absolute -top-10 -right-10 w-80 h-80 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
@@ -172,6 +176,55 @@
                             無料診断へ進む
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- コンセプト（信頼性） -->
+    <section id="about" class="py-20 bg-white relative">
+        <div class="container mx-auto px-6 max-w-5xl">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold mb-4">なぜ、「性格マッチング」なのか？</h2>
+                <div class="w-16 h-1 bg-blue-600 mx-auto rounded"></div>
+                <p class="text-slate-600 mt-8 leading-loose text-lg">
+                    多くの転職失敗の原因は、「スキルの不一致」ではなく<br class="hidden md:block">
+                    企業文化との「カルチャーアンマッチ」にあります。<br>
+                    SEISEIは、独自のアルゴリズムであなたの性格特性を可視化し、<br class="hidden md:block">
+                    ストレスなく働ける「心理的安全性」の高い職場をご提案します。
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="p-8 bg-slate-50 rounded-2xl border border-slate-100 hover:shadow-lg transition group">
+                    <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mb-6 text-3xl group-hover:scale-110 transition">
+                        <i class="fas fa-fingerprint"></i>
+                    </div>
+                    <h3 class="font-bold text-xl mb-3">あなただけの特性分析</h3>
+                    <p class="text-slate-500 leading-relaxed">
+                        5万人の行動データに基づき、あなたの隠れた強みやモチベーションの源泉を言語化します。
+                    </p>
+                </div>
+                <!-- Card 2 -->
+                <div class="p-8 bg-slate-50 rounded-2xl border border-slate-100 hover:shadow-lg transition group">
+                    <div class="w-16 h-16 bg-teal-100 text-teal-600 rounded-2xl flex items-center justify-center mb-6 text-3xl group-hover:scale-110 transition">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <h3 class="font-bold text-xl mb-3">独自の企業スコアリング</h3>
+                    <p class="text-slate-500 leading-relaxed">
+                        求人票には載らない「実際の社風」「上司のタイプ」などを独自取材でデータ化しています。
+                    </p>
+                </div>
+                <!-- Card 3 -->
+                <div class="p-8 bg-slate-50 rounded-2xl border border-slate-100 hover:shadow-lg transition group">
+                    <div class="w-16 h-16 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mb-6 text-3xl group-hover:scale-110 transition">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h3 class="font-bold text-xl mb-3">伴走型エージェント</h3>
+                    <p class="text-slate-500 leading-relaxed">
+                        診断結果をもとに、無理な提案は一切せず、納得のいくキャリア形成をサポートします。
+                    </p>
                 </div>
             </div>
         </div>
