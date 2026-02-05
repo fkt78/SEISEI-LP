@@ -1,0 +1,22 @@
+# robots.txt for https://fkt78.github.io/SEISEI-LP/
+
+User-agent: *
+Allow: /
+
+# Disallow: /private/  # 非公開ページがある場合
+
+# Sitemap
+Sitemap: https://fkt78.github.io/SEISEI-LP/sitemap.xml
+
+# Crawl-delay (optional)
+Crawl-delay: 1
+
+# Specific rules for major search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Yahoo! Slurp
+Allow: /
